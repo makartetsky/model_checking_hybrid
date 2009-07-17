@@ -1,0 +1,8 @@
+tags
+build/*
+build_debug/*
+project.exe
+project_d.exe
+input.smv
+nusmv.out
+doc/*
