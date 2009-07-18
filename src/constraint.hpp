@@ -151,7 +151,7 @@ namespace mc_hybrid
   /** 
    * @brief Input operator for Constraint class.
    * 
-   * @param[in]  s Input stream
+   * @param[out] s Input stream
    * @param[out] c %Constraint.
    * 
    * @return Constraint.

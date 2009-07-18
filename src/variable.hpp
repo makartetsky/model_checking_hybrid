@@ -142,7 +142,7 @@ namespace mc_hybrid
   /** 
    * @brief Input operator for Variable class.
    * 
-   * @param[in]  s Input stream.
+   * @param[out] s Input stream.
    * @param[out] v %Variable.
    * 
    * @return Input stream.
