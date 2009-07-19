@@ -1,0 +1,32 @@
+VARS_INPUT
+  w_u integer 0 .. 1
+VARS_STATE
+  x_il real -5 .. 5
+  x_vo real 0 .. 7
+  a_id real -10 .. 10
+  a_iu real -10 .. 10
+VARS_OUTPUT
+  a_vd real -10 .. 10
+  a_vu real -10 .. 10
+  z_q integer 0 .. 1
+CONSTRS_INIT
+CONSTRS_TRANS
+  1 x_il' + -1 x_il + 5/1000 x_vo + 5/10000 a_vd <= 0
+  -1 x_il' + 1 x_il + 5/1000 x_vo + 5/10000 a_vd <= 0
+  1 x_vo' + -1 x_vo + -2/10 x_il + 5/100 a_vd <= 0
+  -1 x_vo' + 1 x_vo + 2/10 x_il + -5/100 a_vd <= 0
+  1 a_vd + -1 a_vu <= -15
+  -1 a_vd + 1 a_vu <= 15
+  100 z_q + 1 a_vd <= 100
+  100 z_q + -1 a_vd <= 100
+  1000 z_q + -1 a_id <= 1000
+  -100 z_q + 1 a_vd <= 0
+  -200 z_q + 1 a_vd + -10 a_id <= 0
+  -200 z_q + -1 a_vd + 10 a_id <= 0
+  100 w_u + 1 a_vu <= 100
+  100 w_u + -1 a_vu <= 100
+  -200 w_u + -10 a_iu + 1 a_vu <= 0
+  -200 w_u + 10 a_iu + -1 a_vu <= 0
+CONSTRS_SPEC
+  -1 x_il + 1 a_iu + 1 a_id <= 0
+  1 x_il + -1 a_iu + -1 a_id <= 0
