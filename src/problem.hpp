@@ -62,6 +62,11 @@ namespace mc_hybrid
 
     public:
       /** 
+       * @brief Default constructor.
+       */
+      Problem();
+
+      /** 
        * @brief Constructor from input stream.
        * 
        * @param[in] s Input stream.

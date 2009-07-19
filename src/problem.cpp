@@ -43,6 +43,10 @@ namespace mc_hybrid
     "CONSTRS_SPEC"
   };
   
+  Problem::Problem()
+  {
+  }
+
   Problem::Problem(istream& s)
   {
     s >> *this;
