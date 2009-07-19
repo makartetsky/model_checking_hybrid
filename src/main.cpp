@@ -16,7 +16,7 @@
 
 using namespace std;
 
-#define APP_VERSION_STR "0.1"
+#define APP_VERSION_STR "0.1" ///< Application version.
 
 /** 
  * @brief Prints help message.

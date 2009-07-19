@@ -22,6 +22,9 @@ using std::streamsize;
 
 namespace mc_hybrid
 {
+  /** 
+   * @brief Keywords enum.
+   */
   enum Keywords
   {
     KEYWORD_VARS_INPUT,
@@ -33,6 +36,9 @@ namespace mc_hybrid
     KEYWORDS_TOTAL
   };
 
+  /** 
+   * @brief Keywords strings.
+   */
   static const char* keywords[KEYWORDS_TOTAL] =
   {
     "VARS_INPUT",

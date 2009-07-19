@@ -11,7 +11,7 @@
 namespace mc_hybrid
 {
   /** 
-   * @brief Counterexample for verification process.
+   * @brief %Counterexample for verification process.
    */
   class Counterexample
   {

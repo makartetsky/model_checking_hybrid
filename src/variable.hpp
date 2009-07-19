@@ -14,7 +14,7 @@
 namespace mc_hybrid
 {
   /** 
-   * @brief Variable with name, type and range.
+   * @brief %Variable with name, type and range.
    */
   class Variable
   {
