@@ -11,12 +11,16 @@
 #include "variable.hpp"
 #include "constraint.hpp"
 #include "problem.hpp"
+#include "model_smv.hpp"
+#include "counterexample.hpp"
 #include "solver.hpp"
 
 using std::string;
 using std::fstream;
 using std::ios;
 using std::logic_error;
+using std::cout;
+using std::endl;
 
 namespace mc_hybrid
 {
@@ -30,12 +34,13 @@ namespace mc_hybrid
    */
   s_fm_system_t*
   fill_fm_system(Problem* problem,
-                 Problem::Constrs_group group)
+                 Problem::Constrs_group group,
+                 bool include_vars_ranges)
   {
     size_t constraints_num = problem->get_constraints_num(group);
     size_t variables_num = problem->get_constraints_vars_num(group);
 
-    size_t vars_ranges_count = variables_num * 2;
+    size_t vars_ranges_count = include_vars_ranges ? variables_num * 2 : 0;
     
     // number of lines - number of constraints in group +
     // 2 lines for each variable range
@@ -67,25 +72,28 @@ namespace mc_hybrid
     }
 
     // adding lines for variables ranges
-    for (size_t i = 0; i < variables_num; ++i)
+    if (include_vars_ranges == true)
     {
-      s_fm_vector_t* line;
-      s_fm_rational_t* free_member;
-      Variable& v = problem->get_constraints_var(group, i);
-      // adding line for lower bound
-      line = system->lines[constraints_num + i * 2];
-      fm_vector_set_ineq(line);
-      fm_vector_assign_int_idx(line, int_t(1).get_mpz_t(), i + 1);
-      free_member = real_t_to_fm_rational(-v.get_lower_bound());
-      fm_vector_assign_idx(line, free_member, variables_num + 1);
-      fm_rational_free(free_member);
-      // adding line for upper bound
-      line = system->lines[constraints_num + i * 2 + 1];
-      fm_vector_set_ineq(line);
-      fm_vector_assign_int_idx(line, int_t(-1).get_mpz_t(), i + 1);
-      free_member = real_t_to_fm_rational(v.get_upper_bound());
-      fm_vector_assign_idx(line, free_member, variables_num + 1);
-      fm_rational_free(free_member);
+      for (size_t i = 0; i < variables_num; ++i)
+      {
+        s_fm_vector_t* line;
+        s_fm_rational_t* free_member;
+        Variable& v = problem->get_constraints_var(group, i);
+        // adding line for lower bound
+        line = system->lines[constraints_num + i * 2];
+        fm_vector_set_ineq(line);
+        fm_vector_assign_int_idx(line, int_t(1).get_mpz_t(), i + 1);
+        free_member = real_t_to_fm_rational(-v.get_lower_bound());
+        fm_vector_assign_idx(line, free_member, variables_num + 1);
+        fm_rational_free(free_member);
+        // adding line for upper bound
+        line = system->lines[constraints_num + i * 2 + 1];
+        fm_vector_set_ineq(line);
+        fm_vector_assign_int_idx(line, int_t(-1).get_mpz_t(), i + 1);
+        free_member = real_t_to_fm_rational(v.get_upper_bound());
+        fm_vector_assign_idx(line, free_member, variables_num + 1);
+        fm_rational_free(free_member);
+      }
     }
 
     return system;
@@ -102,6 +110,7 @@ namespace mc_hybrid
   void
   eliminate_variables(Problem::Constrs_group group,
                       size_t vars_num,
+                      bool include_vars_ranges,
                       Problem* problem_source,
                       Problem* problem_destination)
   {
@@ -109,7 +118,9 @@ namespace mc_hybrid
     {
       size_t variables_num = problem_source->get_constraints_vars_num(group);
       size_t vars_to_num = variables_num - vars_num;
-      s_fm_system_t* system = fill_fm_system(problem_source, group);
+      s_fm_system_t* system = fill_fm_system(problem_source,
+                                             group,
+                                             include_vars_ranges);
       s_fm_solution_t* solution = fm_solver_solution_to(system, 0, vars_to_num);
       fm_system_free(system);
       if (solution->size > 0)
@@ -223,10 +234,11 @@ namespace mc_hybrid
       if (v.get_type() == Variable::REAL)
         q_params.insert(make_pair(v.get_name(), initial_q_param));
     }
+    make_problem_quantized();
+    make_problem_discrete();
     //bool stop = false;
     //while (stop != true)
     //{
-      //change_q_params();
       //make_problem_quantized();
       //make_problem_discrete();
       //make_problem_pb();
@@ -242,7 +254,10 @@ namespace mc_hybrid
             //break;
           //}
           //if (refine_model_smv() == false) // If refinement fails.
+          //{
+            //change_q_params();
             //break;
+          //}
         //}
         //else // If SMV model verification succeeds.
         //{
@@ -294,8 +309,9 @@ namespace mc_hybrid
     {
       Problem::Constrs_group group = Problem::Constrs_group(i);
       if (group == Problem::CONSTRS_TRANS)
-        eliminate_variables(Problem::CONSTRS_TRANS,
+        eliminate_variables(group,
                             problem_original->get_variables_num(Problem::VARS_OUTPUT),
+                            true,
                             problem_original,
                             problem_without_outputs);
       else
@@ -361,6 +377,44 @@ namespace mc_hybrid
   void
   Solver::make_problem_discrete()
   {
+    if (problem_quantized == 0)
+      throw logic_error("Quantized problem doesn't exist.");
+
+    if (problem_discrete != 0)
+      delete problem_discrete;
+
+    problem_discrete = new Problem();
+
+    // adding variables
+    for (size_t i = 0; i < Problem::VARS_GROUPS_TOTAL; ++i)
+    {
+      Problem::Vars_group group = Problem::Vars_group(i);
+      for (size_t j = 0; j < problem_quantized->get_variables_num(group); ++j)
+      {
+        Variable& v = problem_quantized->get_variable(group, j);
+        if (v.get_type() == Variable::INTEGER)
+          problem_discrete->add_variable(group, v);
+      }
+    }
+
+    // adding constraints
+    for (size_t i = 0; i < Problem::CONSTRS_GROUPS_TOTAL; ++i)
+    {
+      Problem::Constrs_group group = Problem::Constrs_group(i);
+      size_t real_vars_num = 0;
+      size_t vars_num = problem_quantized->get_constraints_vars_num(group);
+      for (size_t j = 0; j < vars_num; ++j)
+      {
+        Variable& v = problem_quantized->get_constraints_var(group, j);
+        if (v.get_type() == Variable::REAL)
+          ++real_vars_num;
+      }
+      eliminate_variables(group,
+                          real_vars_num,
+                          true,
+                          problem_quantized,
+                          problem_discrete);
+    }
   }
 
   void
