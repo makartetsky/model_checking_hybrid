@@ -264,15 +264,13 @@ namespace mc_hybrid
     for (;;)
     {
       symbol = s.peek();
-      if (symbol == EOF)
+      if (symbol == EOF) // End of file detected.
         break;
-      else if (symbol == '#')
-      {
+      else if (symbol == '#') // Comment detected.
         s.ignore(numeric_limits<streamsize>::max(), '\n');
-      }
-      else if ((symbol != ' ') && (symbol != '\t'))
+      else if ((symbol != ' ') && (symbol != '\t')) // Keyword detected.
       {
-        s >> keyword;
+        getline(s, keyword);
         int i = 0;
         for (; i <  KEYWORDS_TOTAL; ++i)
         {
@@ -280,13 +278,13 @@ namespace mc_hybrid
             break;
         }
         if (i == KEYWORDS_TOTAL)
-          throw logic_error("Unknown keyword in input stream.");
+          throw logic_error("Unknown keyword \"" + keyword + "\"in input stream.");
         if (i == keyword_type + 1)
           keyword_type = i;
         else
-          throw logic_error("Unexpected keyword in input stream.");
+          throw logic_error("Unexpected keyword \"" + keyword + "\" in input stream.");
       }
-      else
+      else // Variable or constraint detected.
       {
         switch (keyword_type)
         {
@@ -318,8 +316,8 @@ namespace mc_hybrid
             p.add_constraint(Problem::CONSTRS_SPEC, c);
             break;
         }
+        s.ignore();
       }
-      s.ignore();
     }
 
     return s;
