@@ -114,7 +114,7 @@ namespace mc_hybrid
     s >> v.upper_bound;
     v.upper_bound.canonicalize();
 
-    if (upper_bound < lower_bound)
+    if (v.upper_bound < v.lower_bound)
       throw logic_error("Incorrect variable range in input stream.");
 
     return s;
