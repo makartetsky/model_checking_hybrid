@@ -1,4 +1,4 @@
-/** 
+/**
  * @file counterexample.hpp
  * @brief Counterexample class definition.
  * @author Vadim Alimguzhin <darth@darth.su>
@@ -10,7 +10,7 @@
 
 namespace mc_hybrid
 {
-  /** 
+  /**
    * @brief %Counterexample for verification process.
    */
   class Counterexample

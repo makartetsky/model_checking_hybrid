@@ -1,4 +1,4 @@
-/** 
+/**
  * @file constraint.cpp
  * @brief Constraint class methods definition.
  * @author Vadim Alimguzhin <darth@darth.su>

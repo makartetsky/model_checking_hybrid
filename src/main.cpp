@@ -1,4 +1,4 @@
-/** 
+/**
  * @file main.cpp
  * @brief Application entry point definition.
  * @author Vadim Alimguzhin <darth@darth.su>
@@ -18,9 +18,9 @@ using namespace std;
 
 #define APP_VERSION_STR "0.1" ///< Application version.
 
-/** 
+/**
  * @brief Prints help message.
- * 
+ *
  * @param[in] filename
  */
 void
@@ -33,12 +33,12 @@ usage(const char* filename)
   cout << "       print help message"                                                << endl;
 }
 
-/** 
+/**
  * @brief Application entry point.
- * 
+ *
  * @param[in] argc Arguments count.
  * @param[in] argv Arguments array.
- * 
+ *
  * @return 0 if success, != 0 otherwise.
  */
 int
@@ -57,7 +57,7 @@ main(int argc, char* argv[])
     {0, 0, 0, 0}
   };
 
-  
+
   int opt_idx;
   int c;
 
@@ -86,7 +86,7 @@ main(int argc, char* argv[])
         return 1;
     }
   }
-  
+
   if (optind == argc - 1)
   {
     filename = argv[optind];

@@ -1,4 +1,4 @@
-/** 
+/**
  * @file variable.cpp
  * @brief Variable class methods definition.
  * @author Vadim Alimguzhin <darth@darth.su>
@@ -89,7 +89,7 @@ namespace mc_hybrid
       str_type = "integer";
     else
       str_type = "real";
-    return s << v.name << " " << str_type << " " << v.lower_bound << " .. " << 
+    return s << v.name << " " << str_type << " " << v.lower_bound << " .. " <<
            v.upper_bound << endl;
   }
 

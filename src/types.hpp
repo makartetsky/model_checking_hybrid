@@ -1,4 +1,4 @@
-/** 
+/**
  * @file types.hpp
  * @brief Some typedefs and conversion functions declarations.
  * @author Vadim Alimguzhin <darth@darth.su>
@@ -16,7 +16,7 @@
 #include <fm/solution.h>
 #include <fm/solver.h>
 
-/** 
+/**
  * @brief Project namespace.
  */
 namespace mc_hybrid
@@ -25,21 +25,21 @@ namespace mc_hybrid
   typedef mpz_class int_t;       ///< Integer type (GMP integer).
   typedef unsigned long ulong_t; ///< Abbreviation for unsigned long.
 
-  /** 
+  /**
    * @brief Converts GMP rational into FM rational.
-   * 
+   *
    * @param[in] number GMP rational.
-   * 
+   *
    * @return FM rational.
    */
   s_fm_rational_t*
   real_t_to_fm_rational(real_t number);
 
-  /** 
+  /**
    * @brief Converts FM rational into GMP rational.
-   * 
+   *
    * @param[in] number FM rational.
-   * 
+   *
    * @return GMP rational.
    */
   real_t

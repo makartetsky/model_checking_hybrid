@@ -1,4 +1,4 @@
-/** 
+/**
  * @file model_smv.hpp
  * @brief Model_smv class definition.
  * @author Vadim Alimguzhin <darth@darth.su>
@@ -10,7 +10,7 @@
 
 namespace mc_hybrid
 {
-  /** 
+  /**
    * @brief SMV model representation.
    */
   class Model_smv

@@ -1,4 +1,4 @@
-/** 
+/**
  * @file types.cpp
  * @brief Definition of functions from types.hpp.
  * @author Vadim Alimguzhin <darth@darth.su>

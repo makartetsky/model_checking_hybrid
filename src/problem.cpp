@@ -1,4 +1,4 @@
-/** 
+/**
  * @file problem.cpp
  * @brief Problem class methods definition.
  * @author Vadim Alimguzhin <darth@darth.su>
@@ -22,7 +22,7 @@ using std::streamsize;
 
 namespace mc_hybrid
 {
-  /** 
+  /**
    * @brief Keywords enum.
    */
   enum Keywords
@@ -36,7 +36,7 @@ namespace mc_hybrid
     KEYWORDS_TOTAL
   };
 
-  /** 
+  /**
    * @brief Keywords strings.
    */
   static const char* keywords[KEYWORDS_TOTAL] =
@@ -48,7 +48,7 @@ namespace mc_hybrid
     "CONSTRS_TRANS",
     "CONSTRS_SPEC"
   };
-  
+
   Problem::Problem()
   {
   }
@@ -69,7 +69,7 @@ namespace mc_hybrid
   {
     return vars.at(idx);
   }
-  
+
   size_t
   Problem::get_variables_num(Vars_group group) const
   {
@@ -321,7 +321,7 @@ namespace mc_hybrid
       }
       s.ignore();
     }
-    
+
     return s;
   }
 }; // namespace mc_hybrid

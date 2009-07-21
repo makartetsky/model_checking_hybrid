@@ -1,4 +1,4 @@
-/** 
+/**
  * @file solver.hpp
  * @brief Solver class definition.
  * @author Vadim Alimguzhin <darth@darth.su>
@@ -17,7 +17,7 @@ namespace mc_hybrid
   class Model_smv;
   class Counterexample;
 
-  /** 
+  /**
    * @brief Application logic.
    *
    * @see Problem
@@ -27,14 +27,14 @@ namespace mc_hybrid
   class Solver
   {
     public:
-      /** 
+      /**
        * @brief Default constructor.
        *
        * This constructor assigns initial values to class fields.
        */
       Solver();
 
-      /** 
+      /**
        * @brief Destructor.
        *
        * Frees memory allocated for class fields.
@@ -56,14 +56,14 @@ namespace mc_hybrid
       ulong_t
       verify(const std::string& filename, int initial_q_param, int verbosity);
 
-      /** 
+      /**
        * @brief Gets counterexample.
        *
        * Gets pointer to counterexample. Pointer is valid until Solver
        * object is live.
        *
        * @attention Must be called after verify method.
-       * 
+       *
        * @return Constant pointer to counterexample if verification process
        * @return has failed, 0 otherwise
        */
@@ -80,7 +80,7 @@ namespace mc_hybrid
       void
       make_problem_without_outputs();
 
-      /** 
+      /**
        * @brief Makes quantized problem.
        *
        * Makes problem "equivalent" to problem without output variables by
@@ -89,7 +89,7 @@ namespace mc_hybrid
       void
       make_problem_quantized();
 
-      /** 
+      /**
        * @brief Makes discrete problem.
        *
        * Makes problem "equivalent" to quantized problem, but containing
@@ -98,7 +98,7 @@ namespace mc_hybrid
       void
       make_problem_discrete();
 
-      /** 
+      /**
        * @brief Makes pseudoboolean problem.
        *
        * Makes problem "equivalent" to discrete problem, but containing
@@ -107,7 +107,7 @@ namespace mc_hybrid
       void
       make_problem_pb();
 
-      /** 
+      /**
        * @brief Makes SMV model.
        *
        * Makes SMV model equivalent to pseudoboolean problem.
@@ -115,19 +115,19 @@ namespace mc_hybrid
       void
       make_model_smv();
 
-      /** 
+      /**
        * @brief Verifies SMV model.
        *
        * Verifies SMV model using NuSMV model checker.
-       * 
+       *
        * @return true if model fits specification, false otherwise.
        */
       bool
       verify_model_smv();
 
-      /** 
+      /**
        * @brief Checks if counterexample is spurious.
-       * 
+       *
        * Checks if counterexample found by NuSMV is spurious in case of
        * original problem using GLPK.
        *
@@ -136,17 +136,17 @@ namespace mc_hybrid
       bool
       check_counterexample();
 
-      /** 
+      /**
        * @brief Refines SMV model.
        *
        * Tries to refine SMV model by "allowing" counterexample.
-       * 
+       *
        * @return true if refinement succeeds, false otherwise.
        */
       bool
       refine_model_smv();
 
-      /** 
+      /**
        * @brief Changes quantization parameters values.
        *
        * Changes values of quantization parameter for real variables.
@@ -155,46 +155,46 @@ namespace mc_hybrid
       change_q_params();
 
     private:
-      /** 
+      /**
        * @brief Quantization parameters for real variables.
        */
       std::map<std::string, size_t> q_params;
 
-      /** 
+      /**
        * @brief Original problem.
        */
-      Problem* problem_original;  
-      /** 
+      Problem* problem_original;
+      /**
        * @brief Problem without output variables.
        */
       Problem* problem_without_outputs;
-      /** 
+      /**
        * @brief Quantized problem.
        */
       Problem* problem_quantized;
-      /** 
+      /**
        * @brief Discrete problem.
        */
       Problem* problem_discrete;
-      /** 
+      /**
        * @brief Pseudoboolean problem.
        */
       Problem* problem_pb;
-      
-      /** 
+
+      /**
        * @brief SMV model.
        */
       Model_smv* model_smv;
-      
-      /** 
+
+      /**
        * @brief Counterexample for verification of boolean model.
        */
       Counterexample* counterexample_boolean;
-      /** 
+      /**
        * @brief Counterexample for verification of discrete model.
        */
       Counterexample* counterexample_discrete;
-      /** 
+      /**
        * @brief Counterexample for verification of original model.
        */
       Counterexample* counterexample_mixed;

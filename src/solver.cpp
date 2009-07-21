@@ -1,4 +1,4 @@
-/** 
+/**
  * @file solver.cpp
  * @brief Solver class methods definition.
  * @author Vadim Alimguzhin <darth@darth.su>
@@ -24,12 +24,12 @@ using std::endl;
 
 namespace mc_hybrid
 {
-  /** 
+  /**
    * @brief Fills fm system from constraints group.
-   * 
+   *
    * @param[in] problem Problem.
    * @param[in] group   Constraints group.
-   * 
+   *
    * @return Filled fm system.
    */
   s_fm_system_t*
@@ -41,13 +41,13 @@ namespace mc_hybrid
     size_t variables_num = problem->get_constraints_vars_num(group);
 
     size_t vars_ranges_count = include_vars_ranges ? variables_num * 2 : 0;
-    
+
     // number of lines - number of constraints in group +
     // 2 lines for each variable range
     // number of columns - number of variable
     // + 1 for constraint type
     // + 1 for free_member
-    s_fm_system_t* system = fm_system_alloc(constraints_num + 
+    s_fm_system_t* system = fm_system_alloc(constraints_num +
                                             vars_ranges_count,
                                             variables_num + 2);
     // adding lines for constraints
@@ -99,9 +99,9 @@ namespace mc_hybrid
     return system;
   }
 
-  /** 
+  /**
    * @brief Eliminates variables from constraints group.
-   * 
+   *
    * @param[in]  group               Constraints group.
    * @param[in]  vars_num            Number of variables to eliminate.
    * @param[in]  problem_source      Source problem
@@ -166,7 +166,7 @@ namespace mc_hybrid
     problem_quantized = 0;
     problem_discrete = 0;
     problem_pb = 0;
-    
+
     model_smv = 0;
 
     counterexample_boolean = 0;
@@ -175,7 +175,7 @@ namespace mc_hybrid
 
     q_params.clear();
   }
-  
+
   Solver::~Solver()
   {
     if (problem_original)
@@ -213,7 +213,7 @@ namespace mc_hybrid
     if (counterexample_mixed)
       delete counterexample_mixed;
     counterexample_mixed = 0;
-  }  
+  }
 
   ulong_t
   Solver::verify(const string& filename, int initial_q_param, int /*verbosity*/)
@@ -226,7 +226,7 @@ namespace mc_hybrid
     problem_original = new Problem(file);
     file.close();
 
-    make_problem_without_outputs(); 
+    make_problem_without_outputs();
 
     for (size_t i = 0; i < problem_without_outputs->get_variables_num(); ++i)
     {
@@ -273,7 +273,7 @@ namespace mc_hybrid
 
     return timeval_to_ms(time_finish) - timeval_to_ms(time_start);
   }
-  
+
   const Counterexample*
   Solver::get_counterexample() const
   {
@@ -299,7 +299,7 @@ namespace mc_hybrid
         size_t vars_num = problem_original->get_variables_num(group);
         for (size_t j = 0; j < vars_num; ++j)
         {
-          Variable& v = problem_original->get_variable(group, j); 
+          Variable& v = problem_original->get_variable(group, j);
           problem_without_outputs->add_variable(group, v);
         }
       }
@@ -336,7 +336,7 @@ namespace mc_hybrid
       delete problem_quantized;
 
     problem_quantized = new Problem(*problem_without_outputs);
-    
+
     for (size_t i = 0; i < Problem::VARS_GROUPS_TOTAL; ++i)
     {
       Problem::Vars_group group = Problem::Vars_group(i);

@@ -36,7 +36,7 @@ depfiles := $(subst .o,.d,$(objects))
 depfiles_d := $(subst .o,.d,$(objects_d))
 
 all : release debug
-	
+
 release :	$(result)
 
 debug : $(result_d)
@@ -64,7 +64,7 @@ $(build_dir_d)/%.o : $(src_dir)/%.cpp
 clean : clean_common clean_r clean_d
 
 clean_common:
-	-rm -rf doc/ input.smv nusmv.out 
+	-rm -rf doc/ input.smv nusmv.out
 
 clean_r :
 	-rm -f $(result) $(depfiles) $(objects)
