@@ -8,6 +8,8 @@
 #ifndef TYPES_HPP_
 #define TYPES_HPP_
 
+#include <vector>
+
 #include <sys/time.h>
 
 #include <gmpxx.h>
@@ -44,6 +46,16 @@ namespace mc_hybrid
    */
   real_t
   fm_rational_to_real_t(s_fm_rational_t* number);
+
+  /**
+   * @brief Find least common factor for array of integers.
+   * 
+   * @param[in] nums Array of integers.
+   * 
+   * @return LCF. 
+   */
+  int_t
+  lcf(const std::vector<int_t>& nums);
 
   /**
    * @brief Converts timeval struct into ms (milliseconds).

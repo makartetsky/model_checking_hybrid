@@ -7,6 +7,8 @@
 
 #include "types.hpp"
 
+using std::vector;
+
 namespace mc_hybrid
 {
   s_fm_rational_t*
@@ -24,6 +26,15 @@ namespace mc_hybrid
     real_t result;
     mpz_set(result.get_num_mpz_t(), number->num);
     mpz_set(result.get_den_mpz_t(), number->denum);
+    return result;
+  }
+
+  int_t
+  lcf(const vector<int_t>& nums)
+  {
+    int_t result = 1;
+    for (size_t i = 0; i < nums.size(); ++i)
+      mpz_lcm(result.get_mpz_t(), result.get_mpz_t(), nums[i].get_mpz_t());
     return result;
   }
 
