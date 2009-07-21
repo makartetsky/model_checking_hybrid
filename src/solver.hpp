@@ -8,6 +8,7 @@
 #ifndef SOLVER_HPP_
 #define SOLVER_HPP_
 
+#include <vector>
 #include <map>
 #include <string>
 
@@ -180,6 +181,11 @@ namespace mc_hybrid
        * @brief Pseudoboolean problem.
        */
       Problem* problem_pb;
+
+      /**
+       * @brief Mapping between integer and boolean variables.
+       */
+      std::vector<std::vector<size_t> > vars_mapping;
 
       /**
        * @brief SMV model.

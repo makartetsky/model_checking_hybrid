@@ -6,6 +6,8 @@
  */
 
 #include <fstream>
+#include <sstream>
+#include <cmath>
 
 #include "types.hpp"
 #include "variable.hpp"
@@ -21,6 +23,8 @@ using std::ios;
 using std::logic_error;
 using std::cout;
 using std::endl;
+using std::ostringstream;
+using std::vector;
 
 namespace mc_hybrid
 {
@@ -34,13 +38,12 @@ namespace mc_hybrid
    */
   s_fm_system_t*
   fill_fm_system(Problem* problem,
-                 Problem::Constrs_group group,
-                 bool include_vars_ranges)
+                 Problem::Constrs_group group)
   {
     size_t constraints_num = problem->get_constraints_num(group);
     size_t variables_num = problem->get_constraints_vars_num(group);
 
-    size_t vars_ranges_count = include_vars_ranges ? variables_num * 2 : 0;
+    size_t vars_ranges_count = variables_num * 2;
 
     // number of lines - number of constraints in group +
     // 2 lines for each variable range
@@ -72,28 +75,25 @@ namespace mc_hybrid
     }
 
     // adding lines for variables ranges
-    if (include_vars_ranges == true)
+    for (size_t i = 0; i < variables_num; ++i)
     {
-      for (size_t i = 0; i < variables_num; ++i)
-      {
-        s_fm_vector_t* line;
-        s_fm_rational_t* free_member;
-        Variable& v = problem->get_constraints_var(group, i);
-        // adding line for lower bound
-        line = system->lines[constraints_num + i * 2];
-        fm_vector_set_ineq(line);
-        fm_vector_assign_int_idx(line, int_t(1).get_mpz_t(), i + 1);
-        free_member = real_t_to_fm_rational(-v.get_lower_bound());
-        fm_vector_assign_idx(line, free_member, variables_num + 1);
-        fm_rational_free(free_member);
-        // adding line for upper bound
-        line = system->lines[constraints_num + i * 2 + 1];
-        fm_vector_set_ineq(line);
-        fm_vector_assign_int_idx(line, int_t(-1).get_mpz_t(), i + 1);
-        free_member = real_t_to_fm_rational(v.get_upper_bound());
-        fm_vector_assign_idx(line, free_member, variables_num + 1);
-        fm_rational_free(free_member);
-      }
+      s_fm_vector_t* line;
+      s_fm_rational_t* free_member;
+      Variable& v = problem->get_constraints_var(group, i);
+      // adding line for lower bound
+      line = system->lines[constraints_num + i * 2];
+      fm_vector_set_ineq(line);
+      fm_vector_assign_int_idx(line, int_t(1).get_mpz_t(), i + 1);
+      free_member = real_t_to_fm_rational(-v.get_lower_bound());
+      fm_vector_assign_idx(line, free_member, variables_num + 1);
+      fm_rational_free(free_member);
+      // adding line for upper bound
+      line = system->lines[constraints_num + i * 2 + 1];
+      fm_vector_set_ineq(line);
+      fm_vector_assign_int_idx(line, int_t(-1).get_mpz_t(), i + 1);
+      free_member = real_t_to_fm_rational(v.get_upper_bound());
+      fm_vector_assign_idx(line, free_member, variables_num + 1);
+      fm_rational_free(free_member);
     }
 
     return system;
@@ -110,7 +110,6 @@ namespace mc_hybrid
   void
   eliminate_variables(Problem::Constrs_group group,
                       size_t vars_num,
-                      bool include_vars_ranges,
                       Problem* problem_source,
                       Problem* problem_destination)
   {
@@ -118,9 +117,7 @@ namespace mc_hybrid
     {
       size_t variables_num = problem_source->get_constraints_vars_num(group);
       size_t vars_to_num = variables_num - vars_num;
-      s_fm_system_t* system = fill_fm_system(problem_source,
-                                             group,
-                                             include_vars_ranges);
+      s_fm_system_t* system = fill_fm_system(problem_source, group);
       s_fm_solution_t* solution = fm_solver_solution_to(system, 0, vars_to_num);
       fm_system_free(system);
       if (solution->size > 0)
@@ -221,8 +218,9 @@ namespace mc_hybrid
     timeval time_start;
     gettimeofday(&time_start, NULL);
 
-    fstream file;
-    file.open(filename.c_str(), ios::in);
+    fstream file(filename.c_str(), ios::in);
+    if (!file)
+      throw std::runtime_error("Input file doesn't exist.");
     problem_original = new Problem(file);
     file.close();
 
@@ -236,6 +234,8 @@ namespace mc_hybrid
     }
     make_problem_quantized();
     make_problem_discrete();
+    make_problem_pb();
+    cout << *problem_pb;
     //bool stop = false;
     //while (stop != true)
     //{
@@ -311,7 +311,6 @@ namespace mc_hybrid
       if (group == Problem::CONSTRS_TRANS)
         eliminate_variables(group,
                             problem_original->get_variables_num(Problem::VARS_OUTPUT),
-                            true,
                             problem_original,
                             problem_without_outputs);
       else
@@ -385,7 +384,7 @@ namespace mc_hybrid
 
     problem_discrete = new Problem();
 
-    // adding variables
+    // add variables
     for (size_t i = 0; i < Problem::VARS_GROUPS_TOTAL; ++i)
     {
       Problem::Vars_group group = Problem::Vars_group(i);
@@ -397,7 +396,7 @@ namespace mc_hybrid
       }
     }
 
-    // adding constraints
+    // add constraints
     for (size_t i = 0; i < Problem::CONSTRS_GROUPS_TOTAL; ++i)
     {
       Problem::Constrs_group group = Problem::Constrs_group(i);
@@ -411,15 +410,109 @@ namespace mc_hybrid
       }
       eliminate_variables(group,
                           real_vars_num,
-                          true,
                           problem_quantized,
                           problem_discrete);
+      for (size_t j = 0; j < problem_discrete->get_constraints_num(group); ++j)
+      {
+        Constraint& c = problem_discrete->get_constraint(group, j);
+        vector<int_t> nums;
+        for (size_t k = 0; k < problem_discrete->get_constraints_vars_num(group); ++k)
+        {
+          Variable& v = problem_discrete->get_constraints_var(group, k);
+          real_t coeff = c.get_coeff(v);
+          if (coeff != 0)
+            nums.push_back(coeff.get_den()); 
+        }
+        real_t free_member = c.get_free_member();
+        if (free_member != 0)
+          nums.push_back(free_member.get_den());
+        int_t lcf_num = lcf(nums);
+        c.mult(lcf_num);
+      }
     }
   }
 
   void
   Solver::make_problem_pb()
   {
+    if (problem_discrete == 0)
+      throw logic_error("Discrete problem doesn't exist.");
+
+    if (problem_pb != 0)
+      delete problem_pb;
+
+    problem_pb = new Problem();
+
+    // clear variables mapping
+    vars_mapping.clear();
+    vars_mapping.resize(problem_discrete->get_variables_num());
+
+    // add variables
+    for (size_t i = 0, index = 0; i < Problem::VARS_GROUPS_TOTAL; ++i)
+    {
+      Problem::Vars_group group = Problem::Vars_group(i);
+      for (size_t j = 0; j < problem_discrete->get_variables_num(group); ++j)
+      {
+        size_t var_index = problem_discrete->get_variable_idx(group, j);
+        Variable& v_d = problem_discrete->get_variable(var_index);
+        real_t lower_bound = v_d.get_lower_bound();
+        real_t upper_bound = v_d.get_upper_bound();
+        size_t num = size_t(floor(log(upper_bound.get_d() -
+                                      lower_bound.get_d()) /
+                                  log(2)) +
+                            1);
+
+        for (size_t k = 0; k < num; ++k, ++index)
+        {
+          ostringstream stream;
+          stream << k;
+          string name;
+
+          if (group == Problem::VARS_NEXT_STATE)
+          {
+            name = v_d.get_name();
+            name.erase(name.end() - 1);
+            name += "_" + stream.str() + "'";
+          }
+          else
+            name = v_d.get_name() + "_" + stream.str();
+
+          Variable v_b(name, Variable::INTEGER, 0, 1);
+          problem_pb->add_variable(group, v_b);
+          vars_mapping[var_index].push_back(index);
+        }
+      }
+    }
+
+    // add constraints
+    for (size_t i = 0; i < Problem::CONSTRS_GROUPS_TOTAL; ++i)
+    {
+      Problem::Constrs_group group = Problem::Constrs_group(i);
+      for (size_t j = 0; j < problem_discrete->get_constraints_num(group); ++j)
+      {
+        Constraint& c_d = problem_discrete->get_constraint(group, j);
+        Constraint c_b(c_d.get_type());
+        real_t free_member = 0;
+        for (size_t k = 0; k < problem_discrete->get_constraints_vars_num(group); ++k)
+        {
+          size_t var_index = problem_discrete->get_constraints_var_idx(group, k);
+          Variable& v_d = problem_discrete->get_variable(var_index);
+          real_t coeff = problem_discrete->get_constraint(group, j).get_coeff(v_d);
+          if (coeff != 0)
+          {
+            for (size_t w = 0; w < vars_mapping[k].size(); ++w)
+            {
+              Variable& v_b = problem_pb->get_variable(vars_mapping[var_index][w]);
+              c_b.set_coeff(v_b, coeff * pow(2.0f, w));
+            }
+            free_member += coeff * v_d.get_lower_bound();
+          }
+        }
+        free_member += c_d.get_free_member();
+        c_b.set_free_member(free_member);
+        problem_pb->add_constraint(group, c_b);
+      }
+    }
   }
 
   void
