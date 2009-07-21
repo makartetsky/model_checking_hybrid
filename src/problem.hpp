@@ -113,6 +113,17 @@ namespace mc_hybrid
       get_variable(Vars_group group, size_t idx);
 
       /** 
+       * @brief Gets global variable index by index in the variables group.
+       * 
+       * @param[in] group Variables group.
+       * @param[in] idx   Variable index in the variables group.
+       * 
+       * @return Global variable index.
+       */
+      size_t
+      get_variable_idx(Vars_group group, size_t idx) const;
+
+      /** 
        * @brief Adds variable to specified group.
        * 
        * @param[in] group Variables group.
@@ -162,6 +173,17 @@ namespace mc_hybrid
       get_constraint(Constrs_group group, size_t idx);
 
       /** 
+       * @brief Gets global constraint index by index in the constraints group.
+       * 
+       * @param[in] group Constraints group.
+       * @param[in] idx   Constraint index in the constraints group.
+       * 
+       * @return Global constraint index.
+       */
+      size_t
+      get_constraint_idx(Constrs_group group, size_t idx) const;
+
+      /** 
        * @brief Adds constraint to specified group.
        * 
        * @param[in] group Constraints group.
@@ -191,6 +213,17 @@ namespace mc_hybrid
        */
       Variable&
       get_constraints_var(Constrs_group group, size_t idx);
+
+      /** 
+       * @brief Gets variable index by index in the constraints group.
+       * 
+       * @param[in] group Constraints group.
+       * @param[in] idx   Variable index in the constraints group.
+       * 
+       * @return Global variable index.
+       */
+      size_t
+      get_constraints_var_idx(Constrs_group group, size_t idx) const;
 
       friend std::ostream&
       operator<<(std::ostream& s, Problem& p);

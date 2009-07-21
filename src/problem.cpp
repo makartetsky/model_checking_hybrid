@@ -88,6 +88,15 @@ namespace mc_hybrid
       throw Vars_group_out_of_range();
   }
 
+  size_t
+  Problem::get_variable_idx(Vars_group group, size_t idx) const
+  {
+    if (group < VARS_GROUPS_TOTAL)
+      return vars_groups_idxs[group].at(idx);
+    else
+      throw Vars_group_out_of_range();
+  }
+
   void
   Problem::add_variable(Vars_group group, const Variable& v)
   {
@@ -137,6 +146,15 @@ namespace mc_hybrid
       throw Constrs_group_out_of_range();
   }
 
+  size_t
+  Problem::get_constraint_idx(Constrs_group group, size_t idx) const
+  {
+    if (group < CONSTRS_GROUPS_TOTAL)
+      return constrs_groups_idxs[group].at(idx);
+    else
+      throw Constrs_group_out_of_range();
+  }
+
   void
   Problem::add_constraint(Constrs_group group, const Constraint& c)
   {
@@ -163,6 +181,15 @@ namespace mc_hybrid
   {
     if (group < CONSTRS_GROUPS_TOTAL)
       return get_variable(constrs_groups_vars_idxs[group].at(idx));
+    else
+      throw Constrs_group_out_of_range();
+  }
+
+  size_t
+  Problem::get_constraints_var_idx(Constrs_group group, size_t idx) const
+  {
+    if (group < CONSTRS_GROUPS_TOTAL)
+      return constrs_groups_vars_idxs[group].at(idx);
     else
       throw Constrs_group_out_of_range();
   }
