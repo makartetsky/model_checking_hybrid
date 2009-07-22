@@ -1,0 +1,4 @@
+minisat+*
+*.or
+ADTs/*.or
+depend.mak

@@ -9,6 +9,8 @@ result_dir := .
 deps_dir := deps
 result := $(result_dir)/$(name)
 result_d := $(result_dir)/$(name_d)
+minisat+_exec := minisat+.exe
+minisat+_root := minisat+
 
 # compiler and complier flags
 CC = g++
@@ -37,9 +39,9 @@ depfiles_d := $(subst .o,.d,$(objects_d))
 
 all : release debug
 
-release :	$(result)
+release :	$(result) $(minisat+_exec)
 
-debug : $(result_d)
+debug : $(result_d) $(minisat+_exec)
 
 $(result) : $(objects)
 	$(LINK) $(LDFLAGS) $(objects) -o $(result) $(LIBS)
@@ -59,11 +61,14 @@ $(build_dir)/%.o : $(src_dir)/%.cpp
 $(build_dir_d)/%.o : $(src_dir)/%.cpp
 	$(CC) $(CFLAGS_D) $< -o $@
 
-.PHONY : all release debug clean clean_common clean_r clean_d
+$(minisat+_exec) : $(minisat+_root)/*.C $(minisat+_root)/*.h Makefile
+	(cd $(minisat+_root) && \
+	$(MAKE) rs && \
+	mv minisat+_bignum_static ../$(minisat+_exec)) || exit 1
 
-clean : clean_common clean_r clean_d
+.PHONY : all release debug clean clean_r clean_d clean_minisat
 
-clean_common:
+clean : clean_r clean_d clean_minisat
 	-rm -rf doc/ input.smv nusmv.out
 
 clean_r :
@@ -71,6 +76,10 @@ clean_r :
 
 clean_d :
 	-rm -f $(result_d) $(depfiles_d) $(objects_d)
+
+clean_minisat :
+	-rm -f $(minisat+_exec)
+	(cd $(minisat+_root) && $(MAKE) clean) || exit 1
 
 TAGS : $(src_dir)/* $(include_dir)/*
 	ctags -R --c++-kinds=+p --fields=+iaS --extra=+q $(src_dir) $(include_dir)
