@@ -17,6 +17,9 @@ namespace mc_hybrid
   class Constraint;
   class Problem;
 
+  /**
+   * @brief %Parser for reading Problem from input file.
+   */
   class Parser
   {
     public:
