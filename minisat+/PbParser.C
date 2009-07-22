@@ -126,7 +126,7 @@ static char* parseIdent(B& in, vec<char>& tmp) {   // 'tmp' is cleared, then fil
     tmp.clear();
     tmp.push(*in);
     ++in;
-    while ((*in >= 'a' && *in <= 'z') || (*in >= 'A' && *in <= 'Z') || (*in >= '0' && *in <= '9') || *in == '_')
+    while ((*in >= 'a' && *in <= 'z') || (*in >= 'A' && *in <= 'Z') || (*in >= '0' && *in <= '9') || *in == '_' || *in == '\'')
         tmp.push(*in),
         ++in;
     tmp.push(0);
