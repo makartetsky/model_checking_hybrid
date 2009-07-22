@@ -5,6 +5,7 @@
  * @date 19.07.2009
  */
 
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cmath>
@@ -16,6 +17,7 @@
 #include "model_smv.hpp"
 #include "counterexample.hpp"
 #include "solver.hpp"
+#include "parser.hpp"
 
 using std::string;
 using std::fstream;
@@ -218,11 +220,12 @@ namespace mc_hybrid
     timeval time_start;
     gettimeofday(&time_start, NULL);
 
-    fstream file(filename.c_str(), ios::in);
-    if (!file)
-      throw std::runtime_error("Input file doesn't exist.");
-    problem_original = new Problem(file);
-    file.close();
+    if (problem_original != 0)
+      delete problem_original;
+    problem_original = new Problem();
+    Parser* parser = new Parser();
+    parser->read(filename, *problem_original);
+    delete parser;
 
     make_problem_without_outputs();
 
@@ -235,7 +238,6 @@ namespace mc_hybrid
     make_problem_quantized();
     make_problem_discrete();
     make_problem_pb();
-    cout << *problem_pb;
     //bool stop = false;
     //while (stop != true)
     //{
@@ -412,6 +414,7 @@ namespace mc_hybrid
                           real_vars_num,
                           problem_quantized,
                           problem_discrete);
+      cout << problem_discrete->get_constraints_num(group) << endl;
       for (size_t j = 0; j < problem_discrete->get_constraints_num(group); ++j)
       {
         Constraint& c = problem_discrete->get_constraint(group, j);
@@ -421,7 +424,7 @@ namespace mc_hybrid
           Variable& v = problem_discrete->get_constraints_var(group, k);
           real_t coeff = c.get_coeff(v);
           if (coeff != 0)
-            nums.push_back(coeff.get_den()); 
+            nums.push_back(coeff.get_den());
         }
         real_t free_member = c.get_free_member();
         if (free_member != 0)

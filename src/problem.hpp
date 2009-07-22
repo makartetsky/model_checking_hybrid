@@ -10,9 +10,12 @@
 
 #include <vector>
 #include <stdexcept>
+#include <iosfwd>
 
 namespace mc_hybrid
 {
+  class Parser;
+
   /**
    * @brief Input data representation.
    */
@@ -61,18 +64,6 @@ namespace mc_hybrid
       }; // class Constrs_group_out_of_range
 
     public:
-      /**
-       * @brief Default constructor.
-       */
-      Problem();
-
-      /**
-       * @brief Constructor from input stream.
-       *
-       * @param[in] s Input stream.
-       */
-      Problem(std::istream& s);
-
       /**
        * @brief Gets variables number.
        *
@@ -228,8 +219,7 @@ namespace mc_hybrid
       friend std::ostream&
       operator<<(std::ostream& s, Problem& p);
 
-      friend std::istream&
-      operator>>(std::istream& s, Problem& p);
+      friend class Parser;
 
     private:
       /**
@@ -271,17 +261,6 @@ namespace mc_hybrid
    */
   std::ostream&
   operator<<(std::ostream& s, Problem& p);
-
-  /**
-   * @brief Input operator for Problem class.
-   *
-   * @param[out] s Input stream.
-   * @param[out] p Problem.
-   *
-   * @return Input stream.
-   */
-  std::istream&
-  operator>>(std::istream& s, Problem& p);
 }; // namespace mc_hybrid
 
 #endif // #ifndef PROBLEM_HPP_

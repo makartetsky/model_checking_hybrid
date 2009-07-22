@@ -5,14 +5,14 @@
  * @date 18.07.2009
  */
 
+#include <ostream>
+
 #include "types.hpp"
 #include "variable.hpp"
 
 using std::string;
 using std::ostream;
-using std::istream;
 using std::endl;
-using std::logic_error;
 
 namespace mc_hybrid
 {
@@ -26,11 +26,6 @@ namespace mc_hybrid
                      name(name), type(type),
                      lower_bound(lower_bound), upper_bound(upper_bound)
   {
-  }
-
-  Variable::Variable(istream& s)
-  {
-    s >> *this;
   }
 
   const std::string&
@@ -91,32 +86,5 @@ namespace mc_hybrid
       str_type = "real";
     return s << v.name << " " << str_type << " " << v.lower_bound << " .. " <<
            v.upper_bound << endl;
-  }
-
-  istream&
-  operator>>(istream& s, Variable& v)
-  {
-    string str;
-
-    s >> v.name >> str;
-    if (str == "integer")
-      v.type = Variable::INTEGER;
-    else if (str == "real")
-      v.type = Variable::REAL;
-    else
-      throw logic_error("Unknown variable type in input stream.");
-
-    s >> v.lower_bound;
-    v.lower_bound.canonicalize();
-    s >> str;
-    if (str != "..")
-      throw logic_error("Unexpected string while reading variable range.");
-    s >> v.upper_bound;
-    v.upper_bound.canonicalize();
-
-    if (v.upper_bound < v.lower_bound)
-      throw logic_error("Incorrect variable range in input stream.");
-
-    return s;
   }
 }; // namespace mc_hybrid

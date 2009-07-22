@@ -9,9 +9,12 @@
 #define CONSTRAINT_HPP_
 
 #include <map>
+#include <iosfwd>
 
 namespace mc_hybrid
 {
+  class Parser;
+
   /**
    * @brief Algebraic constraint.
    */
@@ -39,13 +42,6 @@ namespace mc_hybrid
        * @param[in] type Constraint type.
        */
       Constraint(Type type);
-
-      /**
-       * @brief Constructor from input stream.
-       *
-       * @param[in] s Input stream.
-       */
-      Constraint(std::istream& s);
 
       /**
        * @brief Gets constraint type.
@@ -128,8 +124,7 @@ namespace mc_hybrid
       friend std::ostream&
       operator<<(std::ostream& s, Constraint& c);
 
-      friend std::istream&
-      operator>>(std::istream& s, Constraint& c);
+      friend class Parser;
 
     private:
       Type type;                            ///< %Constraint type.
@@ -147,17 +142,6 @@ namespace mc_hybrid
    */
   std::ostream&
   operator<<(std::ostream& s, Constraint& c);
-
-  /**
-   * @brief Input operator for Constraint class.
-   *
-   * @param[out] s Input stream
-   * @param[out] c %Constraint.
-   *
-   * @return Constraint.
-   */
-  std::istream&
-  operator>>(std::istream& s, Constraint& c);
 }; // namespace mc_hybrid
 
 #endif // #ifndef CONSTRAINT_HPP_

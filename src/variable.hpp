@@ -9,10 +9,12 @@
 #define VARIABLE_HPP_
 
 #include <string>
-#include <iostream>
+#include <iosfwd>
 
 namespace mc_hybrid
 {
+  class Parser;
+
   /**
    * @brief %Variable with name, type and range.
    */
@@ -44,12 +46,6 @@ namespace mc_hybrid
        */
       Variable(const std::string& name, Type type,
                real_t lower_bound, real_t upper_bound);
-      /**
-       * @brief Constructor from input stream.
-       *
-       * @param[in] s Input stream.
-       */
-      Variable(std::istream& s);
 
       /**
        * @brief Gets variable name.
@@ -118,8 +114,7 @@ namespace mc_hybrid
       friend std::ostream&
       operator<<(std::ostream& s, Variable& v);
 
-      friend std::istream&
-      operator>>(std::istream& s, Variable& v);
+      friend class Parser;
 
     private:
       std::string name;   ///< %Variable name.
@@ -138,17 +133,6 @@ namespace mc_hybrid
    */
   std::ostream&
   operator<<(std::ostream& s, Variable& v);
-
-  /**
-   * @brief Input operator for Variable class.
-   *
-   * @param[out] s Input stream.
-   * @param[out] v %Variable.
-   *
-   * @return Input stream.
-   */
-  std::istream&
-  operator>>(std::istream& s, Variable& v);
 }; // namespace mc_hybrid
 
 #endif // #ifndef VARIABLE_HPP_

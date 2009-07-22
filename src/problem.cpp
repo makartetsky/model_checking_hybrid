@@ -5,59 +5,20 @@
  * @date 18.07.2009
  */
 
-#include <limits>
+#include <ostream>
 
 #include "types.hpp"
 #include "variable.hpp"
 #include "constraint.hpp"
 #include "problem.hpp"
+#include "keywords.hpp"
 
 using std::string;
 using std::ostream;
-using std::istream;
 using std::endl;
-using std::logic_error;
-using std::numeric_limits;
-using std::streamsize;
 
 namespace mc_hybrid
 {
-  /**
-   * @brief Keywords enum.
-   */
-  enum Keywords
-  {
-    KEYWORD_VARS_INPUT,
-    KEYWORD_VARS_STATE,
-    KEYWORD_VARS_OUTPUT,
-    KEYWORD_CONSTRS_INIT,
-    KEYWORD_CONSTRS_TRANS,
-    KEYWORD_CONSTRS_SPEC,
-    KEYWORDS_TOTAL
-  };
-
-  /**
-   * @brief Keywords strings.
-   */
-  static const char* keywords[KEYWORDS_TOTAL] =
-  {
-    "VARS_INPUT",
-    "VARS_STATE",
-    "VARS_OUTPUT",
-    "CONSTRS_INIT",
-    "CONSTRS_TRANS",
-    "CONSTRS_SPEC"
-  };
-
-  Problem::Problem()
-  {
-  }
-
-  Problem::Problem(istream& s)
-  {
-    s >> *this;
-  }
-
   size_t
   Problem::get_variables_num() const
   {
@@ -245,81 +206,5 @@ namespace mc_hybrid
     {
       s << "  " << p.get_constraint(Problem::CONSTRS_SPEC, i);
     }    return s;
-  }
-
-  istream&
-  operator>>(istream& s, Problem& p)
-  {
-    string keyword;
-    int keyword_type = -1;
-
-    p.clear();
-
-    Variable v;
-    Variable v_dash;
-    Constraint c;
-
-    char symbol;
-
-    for (;;)
-    {
-      symbol = s.peek();
-      if (symbol == EOF) // End of file detected.
-        break;
-      else if (symbol == '#') // Comment detected.
-        s.ignore(numeric_limits<streamsize>::max(), '\n');
-      else if ((symbol != ' ') && (symbol != '\t')) // Keyword detected.
-      {
-        getline(s, keyword);
-        int i = 0;
-        for (; i <  KEYWORDS_TOTAL; ++i)
-        {
-          if (keyword == keywords[i])
-            break;
-        }
-        if (i == KEYWORDS_TOTAL)
-          throw logic_error("Unknown keyword \"" + keyword + "\"in input stream.");
-        if (i == keyword_type + 1)
-          keyword_type = i;
-        else
-          throw logic_error("Unexpected keyword \"" + keyword + "\" in input stream.");
-      }
-      else // Variable or constraint detected.
-      {
-        switch (keyword_type)
-        {
-          case KEYWORD_VARS_INPUT:
-            s >> v;
-            p.add_variable(Problem::VARS_INPUT, v);
-            break;
-          case KEYWORD_VARS_STATE:
-            s >> v;
-            p.add_variable(Problem::VARS_STATE, v);
-            v_dash = v;
-            v_dash.set_name(v.get_name() + "'");
-            p.add_variable(Problem::VARS_NEXT_STATE, v_dash);
-            break;
-          case KEYWORD_VARS_OUTPUT:
-            s >> v;
-            p.add_variable(Problem::VARS_OUTPUT, v);
-            break;
-          case KEYWORD_CONSTRS_INIT:
-            s >> c;
-            p.add_constraint(Problem::CONSTRS_INIT, c);
-            break;
-          case KEYWORD_CONSTRS_TRANS:
-            s >> c;
-            p.add_constraint(Problem::CONSTRS_TRANS, c);
-            break;
-          case KEYWORD_CONSTRS_SPEC:
-            s >> c;
-            p.add_constraint(Problem::CONSTRS_SPEC, c);
-            break;
-        }
-        s.ignore();
-      }
-    }
-
-    return s;
   }
 }; // namespace mc_hybrid

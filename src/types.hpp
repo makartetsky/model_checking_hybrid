@@ -49,10 +49,10 @@ namespace mc_hybrid
 
   /**
    * @brief Find least common factor for array of integers.
-   * 
+   *
    * @param[in] nums Array of integers.
-   * 
-   * @return LCF. 
+   *
+   * @return LCF.
    */
   int_t
   lcf(const std::vector<int_t>& nums);
