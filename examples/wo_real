@@ -1,7 +1,7 @@
 VARS_INPUT
   w_u integer 0 .. 1
 VARS_STATE
-  x_il integer -5/10 .. 5
+  x_il integer -1 .. 5
   x_vc integer 0 .. 7
 VARS_OUTPUT
   a_vd real -30 .. 30
