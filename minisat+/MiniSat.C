@@ -769,7 +769,7 @@ void Solver::exportClauses(cchar* filename, vec<cchar*>& index2name)
                 n_vars = var(c[j])+1; }
         n_clauses++;
     }
-    fprintf(out, "%d %d\n", n_vars, n_clauses);
+    fprintf(out, "%d %d\n", n_vars + 1, n_clauses);
 
     // Export CNF:
     for (int i = 0; i < assigns.size(); i++)
