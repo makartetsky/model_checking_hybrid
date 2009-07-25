@@ -38,7 +38,7 @@ namespace mc_hybrid
       {
         public:
           Vars_group_out_of_range() :
-            std::out_of_range("Variables group is out of range.")
+            std::out_of_range("Variables group is out of range for Problem.")
           {
           }
       }; // class Vars_group_out_of_range
@@ -58,7 +58,7 @@ namespace mc_hybrid
       {
         public:
           Constrs_group_out_of_range() :
-            std::out_of_range("Constrs group is out of range.")
+            std::out_of_range("Constraints group is out of range for Problem.")
           {
           }
       }; // class Constrs_group_out_of_range
