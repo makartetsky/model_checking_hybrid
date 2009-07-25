@@ -2,6 +2,4 @@ tags
 project.exe
 project_d.exe
 minisat+.exe
-input.smv
-nusmv.out
 doc/*
