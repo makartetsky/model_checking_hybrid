@@ -69,7 +69,7 @@ $(minisat+_exec) : $(minisat+_root)/*.C $(minisat+_root)/*.h Makefile
 .PHONY : all release debug clean clean_r clean_d clean_minisat
 
 clean : clean_r clean_d clean_minisat
-	-rm -rf doc/ input.smv nusmv.out
+	-rm -rf doc/
 
 clean_r :
 	-rm -f $(result) $(depfiles) $(objects)
