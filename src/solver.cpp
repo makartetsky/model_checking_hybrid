@@ -19,6 +19,7 @@
 #include "solver.hpp"
 #include "parser.hpp"
 #include "fm_helpers.hpp"
+#include "minisat_helpers.hpp"
 
 using std::string;
 using std::fstream;
@@ -110,8 +111,9 @@ namespace mc_hybrid
     }
     make_problem_quantized();
     make_problem_discrete();
-    //cout << *problem_discrete;
     make_problem_pb();
+    make_model_smv();
+    verify_model_smv();
     //bool stop = false;
     //while (stop != true)
     //{
@@ -321,7 +323,6 @@ namespace mc_hybrid
 
     // clear variables mapping
     vars_mapping.clear();
-    vars_mapping.resize(problem_discrete->get_variables_num());
 
     // add variables
     for (size_t i = 0, index = 0; i < Problem::VARS_GROUPS_TOTAL; ++i)
@@ -329,8 +330,7 @@ namespace mc_hybrid
       Problem::Vars_group group = Problem::Vars_group(i);
       for (size_t j = 0; j < problem_discrete->get_variables_num(group); ++j)
       {
-        size_t var_index = problem_discrete->get_variable_idx(group, j);
-        Variable& v_d = problem_discrete->get_variable(var_index);
+        Variable& v_d = problem_discrete->get_variable(group, j);
         real_t lower_bound = v_d.get_lower_bound();
         real_t upper_bound = v_d.get_upper_bound();
         size_t num = size_t(floor(log(upper_bound.get_d() -
@@ -355,7 +355,7 @@ namespace mc_hybrid
 
           Variable v_b(name, Variable::INTEGER, 0, 1);
           problem_pb->add_variable(group, v_b);
-          vars_mapping[var_index].push_back(index);
+          vars_mapping[v_d.get_name()].push_back(name);
         }
       }
     }
@@ -371,15 +371,14 @@ namespace mc_hybrid
         real_t free_member = 0;
         for (size_t k = 0; k < problem_discrete->get_constraints_vars_num(group); ++k)
         {
-          size_t var_index = problem_discrete->get_constraints_var_idx(group, k);
-          Variable& v_d = problem_discrete->get_variable(var_index);
-          real_t coeff = problem_discrete->get_constraint(group, j).get_coeff(v_d);
+          Variable& v_d = problem_discrete->get_constraints_var(group, k);
+          real_t coeff = c_d.get_coeff(v_d);
           if (coeff != 0)
           {
-            for (size_t w = 0; w < vars_mapping[k].size(); ++w)
+            for (size_t w = 0; w < vars_mapping[v_d.get_name()].size(); ++w)
             {
-              Variable& v_b = problem_pb->get_variable(vars_mapping[var_index][w]);
-              c_b.set_coeff(v_b, coeff * pow(2.0f, w));
+              string& name = vars_mapping[v_d.get_name()][w];
+              c_b.set_coeff(name, coeff * pow(2.0f, w));
             }
             free_member += coeff * v_d.get_lower_bound();
           }
@@ -394,13 +393,22 @@ namespace mc_hybrid
   void
   Solver::make_model_smv()
   {
+    if (problem_pb == 0)
+      throw logic_error("Pseudoboolean problem doesn't exist.");
+
+    if (model_smv != 0)
+      delete model_smv;
+
+    model_smv = new Model_smv(problem_pb);
   }
 
   bool
   Solver::verify_model_smv()
   {
-    // TODO: implement
-    return false;
+    if (model_smv == 0)
+      throw logic_error("SMV model doesn't exist.");
+
+    return model_smv->verify();
   }
 
   bool

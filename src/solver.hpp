@@ -185,7 +185,7 @@ namespace mc_hybrid
       /**
        * @brief Mapping between integer and boolean variables.
        */
-      std::vector<std::vector<size_t> > vars_mapping;
+      std::map<std::string, std::vector<std::string> > vars_mapping;
 
       /**
        * @brief SMV model.
