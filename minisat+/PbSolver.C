@@ -518,7 +518,7 @@ void PbSolver::solve(solve_Command cmd)
 
     if (opt_cnf != NULL)
         reportf("Exporting CNF to: \b%s\b\n", opt_cnf),
-        sat_solver.exportCnf(opt_cnf),
+        sat_solver.exportCnf(opt_cnf, index2name),
         exit(0);
 
     bool    sat = false;
