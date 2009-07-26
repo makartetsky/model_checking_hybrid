@@ -427,6 +427,7 @@ bool PbSolver::rewriteAlmostClauses()
             found = true;
             sprintf(buf, "@split%d", n_splits);
             n_splits++;
+            ++this->n_splits;
             Var x = getVar(buf); assert(x == sat_solver.nVars()-1);
             ps.clear();
             ps.push(Lit(x));
@@ -518,7 +519,7 @@ void PbSolver::solve(solve_Command cmd)
 
     if (opt_cnf != NULL)
         reportf("Exporting CNF to: \b%s\b\n", opt_cnf),
-        sat_solver.exportCnf(opt_cnf, index2name),
+        sat_solver.exportCnf(opt_cnf, index2name, n_splits),
         exit(0);
 
     bool    sat = false;

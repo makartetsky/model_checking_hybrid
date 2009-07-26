@@ -748,14 +748,10 @@ bool Solver::solve(const vec<Lit>& assumps)
 // Debug:
 
 
-void Solver::exportClauses(cchar* filename, vec<cchar*>& index2name)
+void Solver::exportClauses(cchar* filename, vec<cchar*>& index2name, int n_splits)
 {
     assert(decisionLevel() == 0);
     FILE*   out = fopen(filename, "wb"); assert(out != NULL);
-
-    for (int i = 0; i < index2name.size(); ++i)
-      fprintf(out, "%s ", index2name[i]);
-    fprintf(out, "\n");
 
     // HACK: Find biggest variable index used and count the number of clauses:
     int     n_vars = -1, n_clauses = 0;
@@ -770,6 +766,10 @@ void Solver::exportClauses(cchar* filename, vec<cchar*>& index2name)
         n_clauses++;
     }
     fprintf(out, "%d %d\n", n_vars + 1, n_clauses);
+
+    for (int i = 0; i < index2name.size() - n_splits; ++i)
+      fprintf(out, "%s ", index2name[i]);
+    fprintf(out, "\n");
 
     // Export CNF:
     for (int i = 0; i < assigns.size(); i++)

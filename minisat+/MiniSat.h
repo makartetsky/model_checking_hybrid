@@ -191,7 +191,7 @@ public:
     bool    addUnit(Lit p) { if (ok) ok = enqueue(p); return ok; }
     bool    addClause(const vec<Lit>& ps) { if (ok){ Clause* c; ok = newClause(ps, false, c); if (c != NULL) clauses.push(c); } return ok; }
     // -- debug:
-    void    exportClauses(cchar* filename, vec<cchar*>& index2name);
+    void    exportClauses(cchar* filename, vec<cchar*>& index2name, int n_splits);
 
     // Solving:
     //

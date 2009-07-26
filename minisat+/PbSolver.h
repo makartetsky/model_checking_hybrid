@@ -44,6 +44,7 @@ protected:
     vec<Lit>&           trail;          // Chronological assignment stack.
 
     StackAlloc<char*>   mem;            // Used to allocate the 'Linear' constraints stored in 'constrs' (other 'Linear's, such as the goal function, are allocated with 'xmalloc()')
+    int                 n_splits;        // Number of split variables.
 
 public:
     vec<Linear*>        constrs;        // Vector with all constraints.
@@ -78,6 +79,7 @@ public:
                 , declared_n_vars(-1)
                 , declared_n_constrs(-1)
                 , best_goalvalue(Int_MAX)
+                , n_splits(0)
                 {}
 
     // Helpers (semi-internal):

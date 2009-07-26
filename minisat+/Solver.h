@@ -33,10 +33,10 @@ public:
     bool        varElimed      (Var x)              { return (minisat != NULL) ? false : satelite->var_elimed[x]; }
     bool        okay           ()                   { return (minisat != NULL) ? minisat->okay() : satelite->okay(); }
     int         nVars          ()                   { return (minisat != NULL) ? minisat->nVars() : satelite->nVars(); }
-    void        exportCnf      (cchar* filename, vec<cchar*>& index2name)    {
+    void        exportCnf      (cchar* filename, vec<cchar*>& index2name, int n_splits)    {
         if (minisat != NULL){
             minisat->simplifyDB();
-            minisat->exportClauses(filename, index2name);
+            minisat->exportClauses(filename, index2name, n_splits);
         }else{
 
             SatELite::opt_pre_sat = true;
