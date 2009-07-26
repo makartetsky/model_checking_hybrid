@@ -15,6 +15,7 @@
 #include "constraint.hpp"
 #include "problem.hpp"
 #include "minisat_helpers.hpp"
+#include "paths.hpp"
 
 using std::string;
 using std::ostringstream;
@@ -28,10 +29,6 @@ using std::istringstream;
 
 namespace mc_hybrid
 {
-  const char* minisat_input_path = "./minisat_input";
-  const char* minisat_output_path = "./minisat_output";
-  const char* minisat_exec_path = "./minisat+.exe";
-  
   size_t
   minisat_launch(Problem* problem,
           Problem::Constrs_group group,
@@ -65,7 +62,7 @@ namespace mc_hybrid
     fstream file(minisat_input_path, ios::out | ios::trunc);
     if (!file)
       throw runtime_error("Can't create minisat+ input file.");
-    
+
     for (size_t i = 0; i < problem->get_constraints_num(group); ++i)
     {
       Constraint& c = problem->get_constraint(group, i);
@@ -84,68 +81,75 @@ namespace mc_hybrid
   minisat_read_output(size_t aux_num,
                       string& cnf)
   {
-    ostringstream oss_result;
     fstream file(minisat_output_path, ios::in);
     if (!file)
       throw runtime_error("Minisat+ output file doesn't exist.");
-
-    // read names
-    vector<string> index2name;
-    string names;
-    getline(file, names);
-    istringstream iss(names);
-    string name;
-    while (iss >> name)
-    {
-      // replace ' with next()
-      if (name[name.length() - 1] == '\'')
-      {
-        name.erase(name.length() - 1);
-        name = "next(" + name + ")";
-      }
-      index2name.push_back(name);
-    }
-    size_t orig_number = index2name.size();
 
     // Read vars and clauses num.
     size_t vars_num;
     file >> vars_num;
     size_t clauses_num;
     file >> clauses_num;
-    file.ignore();
-
-    // Add enough num of aux vars to index2name.
-    size_t aux_index = aux_num;
-    for (size_t i = orig_number; i < vars_num; ++i)
+    if (clauses_num > 0)
     {
-      ostringstream oss;
-      oss << "_aux" << aux_index;
-      index2name.push_back(oss.str());
-      ++aux_index;
-    }
-
-    // Read clauses.
-    string clause;
-    while (getline(file, clause))
-    {
-      istringstream iss(clause);
-      oss_result << "(";
-      int var_index;
-      while (iss >> var_index)
+      file.ignore();
+      // read names
+      vector<string> index2name;
+      string names;
+      getline(file, names);
+      istringstream iss(names);
+      string name;
+      while (iss >> name)
       {
-        if (var_index < 0)
+        // replace ' with next()
+        if (name[name.length() - 1] == '\'')
         {
-          oss_result << "!";
-          var_index *= -1;
+          name.erase(name.length() - 1);
+          name = "next(" + name + ")";
         }
-        oss_result << index2name.at(var_index);
-        oss_result << " | ";
+        index2name.push_back(name);
       }
-      oss_result.seekp(-3, ios::end);
-      oss_result << ") & ";
+      size_t orig_number = index2name.size();
+
+      // Add enough num of aux vars to index2name.
+      size_t aux_index = aux_num;
+      for (size_t i = orig_number; i < vars_num; ++i)
+      {
+        ostringstream oss;
+        oss << "_aux" << aux_index;
+        index2name.push_back(oss.str());
+        ++aux_index;
+      }
+
+      // Read clauses.
+      ostringstream oss_result;
+      string clause;
+      while (getline(file, clause))
+      {
+        istringstream iss(clause);
+        oss_result << "(";
+        int var_index;
+        while (iss >> var_index)
+        {
+          if (var_index < 0)
+          {
+            oss_result << "!";
+            var_index *= -1;
+          }
+          oss_result << index2name.at(var_index);
+          oss_result << " | ";
+        }
+        oss_result.seekp(-3, ios::end);
+        oss_result << ") & ";
+      }
+      cnf = oss_result.str();
+      cnf.erase(cnf.length() - 3);
+      return aux_index;
     }
-    cnf = oss_result.str();
-    cnf.erase(cnf.length() - 3);
-    return aux_index;
+    else
+    {
+      cnf = "";
+      return 0;
+    }
   }
 }; // namespace mc_hybrid

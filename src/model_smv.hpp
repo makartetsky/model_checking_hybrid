@@ -16,10 +16,6 @@ namespace mc_hybrid
   class Problem;
   class Counterexample;
 
-  extern const char* nusmv_input_path;
-  extern const char* nusmv_output_path;
-  extern const char* nusmv_exec_path;
-
   /**
    * @brief SMV model representation.
    */
@@ -37,7 +33,7 @@ namespace mc_hybrid
 
       /**
        * @brief Refines model
-       * 
+       *
        * @return true if refinement succeeds, false otherwise.
        */
       bool
@@ -45,7 +41,7 @@ namespace mc_hybrid
 
       /**
        * @brief Writes model to file with specified name.
-       * 
+       *
        * @param[in] filename Filename.
        */
       void
@@ -53,7 +49,7 @@ namespace mc_hybrid
 
       /**
        * @brief Verify model using NuSMV model checker.
-       * 
+       *
        * @return true if model fits specification, false otherwise.
        */
       bool

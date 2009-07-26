@@ -16,6 +16,7 @@
 #include "constraint.hpp"
 #include "problem.hpp"
 #include "minisat_helpers.hpp"
+#include "paths.hpp"
 
 using std::string;
 using std::fstream;
@@ -26,13 +27,9 @@ using std::ostringstream;
 
 namespace mc_hybrid
 {
-  const char* nusmv_input_path = "./nusmv_input";
-  const char* nusmv_output_path = "./nusmv_output";
-  const char* nusmv_exec_path = "NuSMV";
-
   Model_smv::Model_smv(Problem* problem)
   {
-    // fill variables names from problem
+    // Fill variables names from problem.
     for (size_t i = 0; i < problem->get_variables_num(Problem::VARS_INPUT); ++i)
     {
       Variable& v = problem->get_variable(Problem::VARS_INPUT, i);
@@ -43,6 +40,7 @@ namespace mc_hybrid
       Variable& v = problem->get_variable(Problem::VARS_STATE, i);
       vars_state.push_back(v.get_name());
     }
+    // Generate cnfs.
     size_t aux_num = 0;
     aux_num = minisat_launch(problem,
                              Problem::CONSTRS_INIT,
@@ -56,6 +54,9 @@ namespace mc_hybrid
                              Problem::CONSTRS_SPEC,
                              aux_num,
                              spec);
+    if (spec.length() == 0)
+      throw std::logic_error("Specification is empty while creating SMV model.");
+
     for (size_t i = 0; i < aux_num; ++i)
     {
       ostringstream oss;
@@ -85,13 +86,19 @@ namespace mc_hybrid
     file << "VAR" << endl;
     for (size_t i = 0; i < vars_state.size(); ++i)
       file << "  " << vars_state.at(i) << " : 0 .. 1;" << endl;
-        
-    file << "INIT" << endl;
-    file << "  " << init << ";" << endl;
 
-    file << "TRANS" << endl;
-    file << "  " << trans  << ";" << endl;
-    
+    if (init.length() > 0)
+    {
+      file << "INIT" << endl;
+      file << "  " << init << ";" << endl;
+    }
+
+    if (trans.length() > 0)
+    {
+      file << "TRANS" << endl;
+      file << "  " << trans  << ";" << endl;
+    }
+
     file << "SPEC" << endl;
     file << "  AG (" << spec << ");" << endl;
   }
@@ -101,20 +108,20 @@ namespace mc_hybrid
   {
     write(nusmv_input_path);
 
-    string nusmv_cmd = nusmv_exec_path;
-    nusmv_cmd += " ";
-    nusmv_cmd += nusmv_input_path;
-    nusmv_cmd += " > ";
-    nusmv_cmd += nusmv_output_path;
+    //string nusmv_cmd = nusmv_exec_path;
+    //nusmv_cmd += " ";
+    //nusmv_cmd += nusmv_input_path;
+    //nusmv_cmd += " > ";
+    //nusmv_cmd += nusmv_output_path;
 
-    if (system(nusmv_cmd.c_str()) != 0)
-      throw runtime_error("NuSMV can't be launched.");
-
-    remove(nusmv_input_path);
-
-    // Read nusmv output.
+    //if (system(nusmv_cmd.c_str()) != 0)
+      //throw runtime_error("NuSMV can't be launched.");
     
-    remove(nusmv_output_path);
+    //remove(nusmv_input_path);
+
+    //// Read nusmv output.
+    
+    //remove(nusmv_output_path);
 
     return false;
   }

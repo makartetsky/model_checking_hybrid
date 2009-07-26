@@ -12,13 +12,9 @@
 
 namespace mc_hybrid
 {
-  extern const char* minisat_input_path;  ///< Path to minisat+ input file.
-  extern const char* minisat_output_path; ///< Path to minisat+ output file.
-  extern const char* minisat_exec_path;   ///< Path to minisat+ executable.
-
   /**
    * @brief Makes cnf equisatisfiable to system of pb constraints.
-   * 
+   *
    * @param[in]  problem Problem.
    * @param[in]  group   Constraints group.
    * @param[in]  aux_num Aux vars number.
@@ -34,7 +30,7 @@ namespace mc_hybrid
 
   /**
    * @brief Makes input file for minisat+.
-   * 
+   *
    * @param[in]  problem Problem.
    * @param[in]  group   Constraints group.
    */
