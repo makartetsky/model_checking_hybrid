@@ -12,7 +12,7 @@ result_d := $(result_dir)/$(name_d)
 minisat+_exec := minisat+.exe
 minisat+_root := minisat+
 
-# compiler and complier flags
+# compiler and compiler flags
 CC = g++
 
 DEBUG = -g
