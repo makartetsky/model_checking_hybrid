@@ -1,0 +1,4 @@
+go
+check_ctlspec
+show_traces -p 4 -o counterexample.xml
+quit
