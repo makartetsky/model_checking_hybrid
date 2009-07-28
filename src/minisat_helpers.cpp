@@ -42,7 +42,7 @@ namespace mc_hybrid
     minisat_cmd += minisat_input_path;
     minisat_cmd += " -cnf=";
     minisat_cmd += minisat_output_path;
-    minisat_cmd += " > /dev/null";
+    minisat_cmd += " > /dev/null 2>&1";
     int result = system(minisat_cmd.c_str());
     if (result != 0)
       throw runtime_error("Minisat+ can't be launched");
