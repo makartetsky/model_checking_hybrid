@@ -17,6 +17,7 @@ namespace mc_hybrid
   extern const char* nusmv_input_path;  ///< Path to NuSMV input file.
   extern const char* nusmv_output_path; ///< Path to NuSMV output file.
   extern const char* nusmv_exec_path;   ///< Path to NuSMV executable.
+  extern const char* nusmv_cmds_path;   ///< Path to the file with commands for NuSMV interactive mode.
 }; // namespace mc_hybrid
 
 #endif // #ifndef PATHS_HPP_
