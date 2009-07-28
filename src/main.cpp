@@ -11,10 +11,15 @@
 
 #include <getopt.h>
 
+#include <xercesc/util/PlatformUtils.hpp>
+
 #include "types.hpp"
 #include "solver.hpp"
 
 using namespace std;
+
+using xercesc::XMLPlatformUtils;
+using xercesc::XMLException;
 
 #define APP_VERSION_STR "0.1" ///< Application version.
 
@@ -106,12 +111,20 @@ main(int argc, char* argv[])
 
   try
   {
+    XMLPlatformUtils::Initialize();
     mc_hybrid::Solver solver;
     solver.verify(filename, q_param, verbose);
+    XMLPlatformUtils::Terminate();
   }
-  catch (exception& e)
+  catch (const exception& e)
   {
     cerr << e.what() << endl;
+    XMLPlatformUtils::Terminate();
+    exit(EXIT_FAILURE);
+  }
+  catch (const XMLException& e)
+  {
+    cerr << "Problems with XML library." << endl;
     exit(EXIT_FAILURE);
   }
 
