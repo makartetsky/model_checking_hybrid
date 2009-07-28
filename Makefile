@@ -30,7 +30,7 @@ LINK = g++
 LDFLAGS = $(OPTIMIZE)
 LDFLAGS_D = $(DEBUG)
 
-LIBS = -lfm -lgmpxx -lgmp
+LIBS = -lfm -lgmpxx -lgmp -lxerces-c
 
 objects := $(patsubst $(src_dir)/%.cpp,$(build_dir)/%.o,$(wildcard $(src_dir)/*.cpp))
 objects_d := $(subst $(build_dir)/,$(build_dir_d)/,$(objects))
