@@ -408,7 +408,7 @@ namespace mc_hybrid
     if (model_smv == 0)
       throw logic_error("SMV model doesn't exist.");
 
-    return model_smv->verify();
+    return model_smv->verify(counterexample_boolean);
   }
 
   bool

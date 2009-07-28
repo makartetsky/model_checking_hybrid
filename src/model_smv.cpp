@@ -104,25 +104,36 @@ namespace mc_hybrid
   }
 
   bool
-  Model_smv::verify()
+  Model_smv::verify(Counterexample* ce)
   {
+    bool result = false;
+
     write(nusmv_input_path);
 
-    //string nusmv_cmd = nusmv_exec_path;
-    //nusmv_cmd += " ";
-    //nusmv_cmd += nusmv_input_path;
-    //nusmv_cmd += " > ";
-    //nusmv_cmd += nusmv_output_path;
+    string nusmv_cmd = nusmv_exec_path;
+    nusmv_cmd += " -load ";
+    nusmv_cmd += nusmv_input_path;
+    nusmv_cmd += " > /dev/null 2>&1";
 
-    //if (system(nusmv_cmd.c_str()) != 0)
-      //throw runtime_error("NuSMV can't be launched.");
+    if (system(nusmv_cmd.c_str()) != 0)
+      throw runtime_error("NuSMV can't be launched.");
     
-    //remove(nusmv_input_path);
+    remove(nusmv_input_path);
 
-    //// Read nusmv output.
-    
-    //remove(nusmv_output_path);
+    fstream file(nusmv_output_path);
+    if (file)
+    {
+      file.close();
+      if (ce != 0)
+        delete ce;
+      ce = new Counterexample(*this);
+      ce->read(nusmv_output_path);
+      remove(nusmv_output_path);
+      result = false;
+    }
+    else
+      result = true;
 
-    return false;
+    return result;
   }
 }; // namespace mc_hybrid

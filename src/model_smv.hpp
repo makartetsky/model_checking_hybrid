@@ -50,10 +50,12 @@ namespace mc_hybrid
       /**
        * @brief Verify model using NuSMV model checker.
        *
+       * @param[in] ce Counterexample.
+       *
        * @return true if model fits specification, false otherwise.
        */
       bool
-      verify();
+      verify(Counterexample* ce);
 
     public:
       std::vector<std::string> vars_input; ///< Input variables.
