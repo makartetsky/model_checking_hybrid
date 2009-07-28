@@ -84,38 +84,46 @@ namespace mc_hybrid
       DOMElement* step_node =
         (DOMElement*) steps_nodes->item(i);
 
-      DOMElement* state_node =
-        (DOMElement*) step_node->getElementsByTagName(str_state)->item(0);
-      DOMNodeList* state_values_nodes =
-        state_node->getElementsByTagName(str_value);
-      for (size_t j = 0; j < state_values_nodes->getLength(); ++j)
+      DOMNodeList* state_nodes = step_node->getElementsByTagName(str_state);
+      if (state_nodes->getLength() > 0)
       {
-        DOMElement* state_value_node = 
-          (DOMElement*) state_values_nodes->item(j);
-        char* var_name = XMLString::transcode(
-            state_value_node->getAttribute(str_variable));
-        char* var_value = XMLString::transcode(
-            state_value_node->getNodeValue());
-        set_var_value(i, var_name, real_t(var_value));
-        XMLString::release(&var_name);
-        XMLString::release(&var_value);
+        DOMElement* state_node =
+          (DOMElement*) state_nodes->item(0);
+        DOMNodeList* state_values_nodes =
+          state_node->getElementsByTagName(str_value);
+        for (size_t j = 0; j < state_values_nodes->getLength(); ++j)
+        {
+          DOMElement* state_value_node = 
+            (DOMElement*) state_values_nodes->item(j);
+          char* var_name = XMLString::transcode(
+              state_value_node->getAttribute(str_variable));
+          char* var_value = XMLString::transcode(
+              state_value_node->getChildNodes()->item(0)->getNodeValue());
+          set_var_value(i, var_name, real_t(var_value));
+          XMLString::release(&var_name);
+          XMLString::release(&var_value);
+        }
       }
 
-      DOMElement* input_node =
-        (DOMElement*) step_node->getElementsByTagName(str_input)->item(0);
-      DOMNodeList* input_values_nodes =
-        input_node->getElementsByTagName(str_value);
-      for (size_t j = 0; j < input_values_nodes->getLength(); ++j)
+      DOMNodeList* input_nodes = step_node->getElementsByTagName(str_input);
+      if (input_nodes->getLength() > 0)
       {
-        DOMElement* input_value_node = 
-          (DOMElement*) input_values_nodes->item(j);
-        char* var_name = XMLString::transcode(
-            input_value_node->getAttribute(str_variable));
-        char* var_value = XMLString::transcode(
-            input_value_node->getNodeValue());
-        set_ivar_value(i, var_name, real_t(var_value));
-        XMLString::release(&var_name);
-        XMLString::release(&var_value);
+        DOMElement* input_node =
+          (DOMElement*) input_nodes->item(0);
+        DOMNodeList* input_values_nodes =
+          input_node->getElementsByTagName(str_value);
+        for (size_t j = 0; j < input_values_nodes->getLength(); ++j)
+        {
+          DOMElement* input_value_node = 
+            (DOMElement*) input_values_nodes->item(j);
+          char* var_name = XMLString::transcode(
+              input_value_node->getAttribute(str_variable));
+          char* var_value = XMLString::transcode(
+              input_value_node->getChildNodes()->item(0)->getNodeValue());
+          set_ivar_value(i, var_name, real_t(var_value));
+          XMLString::release(&var_name);
+          XMLString::release(&var_value);
+        }
       }
     }
     delete parser;
