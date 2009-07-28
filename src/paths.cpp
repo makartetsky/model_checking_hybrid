@@ -12,7 +12,7 @@ namespace mc_hybrid
   const char* minisat_exec_path = "./minisat+.exe";
 
   const char* nusmv_input_path = "./nusmv_input";
-  const char* nusmv_output_path = "./nusmv_output";
+  const char* nusmv_output_path = "./counterexample.xml";
   const char* nusmv_exec_path = "NuSMV";
   const char* nusmv_cmds_path = "./nusmv_cmds";
 }; // namespace mc_hybrid

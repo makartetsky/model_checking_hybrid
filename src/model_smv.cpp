@@ -112,6 +112,8 @@ namespace mc_hybrid
 
     string nusmv_cmd = nusmv_exec_path;
     nusmv_cmd += " -load ";
+    nusmv_cmd += nusmv_cmds_path;
+    nusmv_cmd += " ";
     nusmv_cmd += nusmv_input_path;
     nusmv_cmd += " > /dev/null 2>&1";
 
@@ -127,7 +129,7 @@ namespace mc_hybrid
       if (ce != 0)
         delete ce;
       ce = new Counterexample(*this);
-      ce->read(nusmv_output_path);
+      //ce->read(nusmv_output_path);
       remove(nusmv_output_path);
       result = false;
     }
