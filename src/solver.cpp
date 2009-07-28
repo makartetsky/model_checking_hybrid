@@ -399,7 +399,7 @@ namespace mc_hybrid
     if (model_smv != 0)
       delete model_smv;
 
-    model_smv = new Model_smv(problem_pb);
+    model_smv = new Model_smv(*problem_pb);
   }
 
   bool
