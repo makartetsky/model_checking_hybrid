@@ -30,10 +30,10 @@ using std::istringstream;
 namespace mc_hybrid
 {
   size_t
-  minisat_launch(Problem* problem,
-          Problem::Constrs_group group,
-          size_t aux_num,
-          string& cnf)
+  minisat_launch(Problem& problem,
+                 Problem::Constrs_group group,
+                 size_t aux_num,
+                 string& cnf)
   {
     minisat_generate_input(problem, group);
 
@@ -56,19 +56,19 @@ namespace mc_hybrid
   }
 
   void
-  minisat_generate_input(Problem* problem,
+  minisat_generate_input(Problem& problem,
                          Problem::Constrs_group group)
   {
     fstream file(minisat_input_path, ios::out | ios::trunc);
     if (!file)
       throw runtime_error("Can't create minisat+ input file.");
 
-    for (size_t i = 0; i < problem->get_constraints_num(group); ++i)
+    for (size_t i = 0; i < problem.get_constraints_num(group); ++i)
     {
-      Constraint& c = problem->get_constraint(group, i);
-      for (size_t j = 0; j < problem->get_constraints_vars_num(group); ++j)
+      Constraint& c = problem.get_constraint(group, i);
+      for (size_t j = 0; j < problem.get_constraints_vars_num(group); ++j)
       {
-        Variable& v = problem->get_constraints_var(group, j);
+        Variable& v = problem.get_constraints_var(group, j);
         real_t coeff = c.get_coeff(v);
         if (coeff != 0)
           file << coeff << "*" << v.get_name() << " ";

@@ -23,10 +23,10 @@ namespace mc_hybrid
    * @return New aux vars number.
    */
   size_t
-  minisat_launch(Problem* problem,
-          Problem::Constrs_group group,
-          size_t aux_num,
-          std::string& cnf);
+  minisat_launch(Problem& problem,
+                 Problem::Constrs_group group,
+                 size_t aux_num,
+                 std::string& cnf);
 
   /**
    * @brief Makes input file for minisat+.
@@ -35,7 +35,7 @@ namespace mc_hybrid
    * @param[in]  group   Constraints group.
    */
   void
-  minisat_generate_input(Problem* problem,
+  minisat_generate_input(Problem& problem,
                          Problem::Constrs_group group);
 
   /**

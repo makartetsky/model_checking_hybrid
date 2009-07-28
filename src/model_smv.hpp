@@ -29,7 +29,7 @@ namespace mc_hybrid
        *
        * @param[in] problem Problem.
        */
-      Model_smv(Problem* problem);
+      Model_smv(Problem& problem);
 
       /**
        * @brief Refines model
@@ -37,7 +37,7 @@ namespace mc_hybrid
        * @return true if refinement succeeds, false otherwise.
        */
       bool
-      refine(Counterexample* c);
+      refine(Counterexample& c);
 
       /**
        * @brief Writes model to file with specified name.

@@ -27,17 +27,17 @@ using std::ostringstream;
 
 namespace mc_hybrid
 {
-  Model_smv::Model_smv(Problem* problem)
+  Model_smv::Model_smv(Problem& problem)
   {
     // Fill variables names from problem.
-    for (size_t i = 0; i < problem->get_variables_num(Problem::VARS_INPUT); ++i)
+    for (size_t i = 0; i < problem.get_variables_num(Problem::VARS_INPUT); ++i)
     {
-      Variable& v = problem->get_variable(Problem::VARS_INPUT, i);
+      Variable& v = problem.get_variable(Problem::VARS_INPUT, i);
       vars_input.push_back(v.get_name());
     }
-    for (size_t i = 0; i < problem->get_variables_num(Problem::VARS_STATE); ++i)
+    for (size_t i = 0; i < problem.get_variables_num(Problem::VARS_STATE); ++i)
     {
-      Variable& v = problem->get_variable(Problem::VARS_STATE, i);
+      Variable& v = problem.get_variable(Problem::VARS_STATE, i);
       vars_state.push_back(v.get_name());
     }
     // Generate cnfs.
@@ -66,7 +66,7 @@ namespace mc_hybrid
   }
 
   bool
-  Model_smv::refine(Counterexample* /*counterexample*/)
+  Model_smv::refine(Counterexample& /*counterexample*/)
   {
     return false;
   }
