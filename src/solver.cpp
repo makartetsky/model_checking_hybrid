@@ -414,7 +414,18 @@ namespace mc_hybrid
   bool
   Solver::check_counterexample()
   {
-    // TODO: implement
+    if (counterexample_boolean == 0)
+      throw logic_error("Boolean counterexample doesn't exist.");
+
+    if (counterexample_discrete != 0)
+      delete counterexample_discrete;
+    counterexample_discrete = new Counterexample(*problem_discrete);
+
+    for (size_t i = 0; i < counterexample_boolean->get_steps_count(); ++i)
+    {
+      counterexample_discrete->add_step();
+    }
+
     return false;
   }
 

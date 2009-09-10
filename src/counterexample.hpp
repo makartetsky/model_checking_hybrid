@@ -98,7 +98,7 @@ namespace mc_hybrid
        */
       size_t
       get_vars_count() const;
-
+      
       /**
        * @brief Gets variable value.
        *
