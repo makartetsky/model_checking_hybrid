@@ -89,7 +89,7 @@ namespace mc_hybrid
   }
 
   ulong_t
-  Solver::verify(const string& filename, int initial_q_param, int /*verbosity*/)
+  Solver::verify(const string& filename, int initial_q_param, int verbosity)
   {
     timeval time_start;
     gettimeofday(&time_start, NULL);
@@ -102,6 +102,13 @@ namespace mc_hybrid
     delete parser;
 
     make_problem_without_outputs();
+    if (verbosity > 0)
+    {
+      cout << "====================================" << endl;
+      cout << "= Problem without outputs          =" << endl;
+      cout << "====================================" << endl;
+      cout << *problem_without_outputs;
+    }
 
     for (size_t i = 0; i < problem_without_outputs->get_variables_num(); ++i)
     {
@@ -110,9 +117,41 @@ namespace mc_hybrid
         q_params.insert(make_pair(v.get_name(), initial_q_param));
     }
     make_problem_quantized();
+    if (verbosity > 0)
+    {
+      cout << "====================================" << endl;
+      cout << "= Quantized problem                =" << endl;
+      cout << "====================================" << endl;
+      cout << *problem_quantized;
+    }
+
     make_problem_discrete();
+    if (verbosity > 0)
+    {
+      cout << "====================================" << endl;
+      cout << "= Discrete problem                 =" << endl;
+      cout << "====================================" << endl;
+      cout << *problem_discrete;
+    }
+
     make_problem_pb();
+    if (verbosity > 0)
+    {
+      cout << "====================================" << endl;
+      cout << "= Pseudoboolean problem            =" << endl;
+      cout << "====================================" << endl;
+      cout << *problem_pb;
+    }
+
     make_model_smv();
+    if (verbosity > 0)
+    {
+      cout << "====================================" << endl;
+      cout << "= SMV model                        =" << endl;
+      cout << "====================================" << endl;
+      cout << *model_smv;
+    }
+
     verify_model_smv();
     //bool stop = false;
     //while (stop != true)
