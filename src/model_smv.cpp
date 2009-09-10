@@ -24,6 +24,7 @@ using std::ios;
 using std::runtime_error;
 using std::endl;
 using std::ostringstream;
+using std::ostream;
 
 namespace mc_hybrid
 {
@@ -78,30 +79,10 @@ namespace mc_hybrid
     if (!file)
       throw runtime_error("Can't create NuSMV input file.");
 
-    file << "MODULE main" << endl;
-    file << "IVAR" << endl;
-    for (size_t i = 0; i < vars_input.size(); ++i)
-      file << "  " << vars_input.at(i) << " : 0 .. 1;" << endl;
-
-    file << "VAR" << endl;
-    for (size_t i = 0; i < vars_state.size(); ++i)
-      file << "  " << vars_state.at(i) << " : 0 .. 1;" << endl;
-
-    if (init.length() > 0)
-    {
-      file << "INIT" << endl;
-      file << "  " << init << ";" << endl;
-    }
-
-    if (trans.length() > 0)
-    {
-      file << "TRANS" << endl;
-      file << "  " << trans  << ";" << endl;
-    }
-
-    file << "SPEC" << endl;
-    file << "  AG (" << spec << ");" << endl;
+    file << *this; 
   }
+
+  
 
   bool
   Model_smv::verify(Counterexample* ce)
@@ -137,5 +118,35 @@ namespace mc_hybrid
       result = true;
 
     return result;
+  }
+
+  ostream&
+  operator<<(ostream& s, Model_smv& m)
+  {
+    s << "MODULE main" << endl;
+    s << "IVAR" << endl;
+    for (size_t i = 0; i < m.vars_input.size(); ++i)
+      s << "  " << m.vars_input.at(i) << " : 0 .. 1;" << endl;
+
+    s << "VAR" << endl;
+    for (size_t i = 0; i < m.vars_state.size(); ++i)
+      s << "  " << m.vars_state.at(i) << " : 0 .. 1;" << endl;
+
+    if (m.init.length() > 0)
+    {
+      s << "INIT" << endl;
+      s << "  " << m.init << ";" << endl;
+    }
+
+    if (m.trans.length() > 0)
+    {
+      s << "TRANS" << endl;
+      s << "  " << m.trans  << ";" << endl;
+    }
+
+    s << "SPEC" << endl;
+    s << "  AG (" << m.spec << ");" << endl;
+
+    return s;
   }
 }; // namespace mc_hybrid

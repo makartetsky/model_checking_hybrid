@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <string>
+#include <ostream>
 
 namespace mc_hybrid
 {
@@ -57,6 +58,9 @@ namespace mc_hybrid
       bool
       verify(Counterexample* ce);
 
+      friend std::ostream&
+      operator<<(std::ostream& s, Model_smv& m);
+
     public:
       std::vector<std::string> vars_input; ///< Input variables.
       std::vector<std::string> vars_state; ///< State variables.
@@ -69,6 +73,17 @@ namespace mc_hybrid
       size_t tmax;                      ///< Maximal length of counterexample.
       std::vector<std::string> defines; ///< Defines.
   }; // class Model_smv
+
+  /**
+   * @brief Output operator for Problem class.
+   *
+   * @param[out] s Output stream.
+   * @param[in]  m SMV model.
+   *
+   * @return Output stream.
+   */
+  std::ostream&
+  operator<<(std::ostream& s, Model_smv& m);
 }; // namespace mc_hybrid
 
 #endif // #ifndef MODEL_SMV_HPP_
