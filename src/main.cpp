@@ -58,7 +58,7 @@ main(int argc, char* argv[])
   {
     {"help", 0, 0, 'h'},
     {"verbose", 1, 0, 'v'},
-    {"q_param", 1, 0, 'i'},
+    {"q_param", 1, 0, 'q'},
     {0, 0, 0, 0}
   };
 
@@ -82,7 +82,7 @@ main(int argc, char* argv[])
         verbose = atoi(optarg);
         break;
 
-      case 'i':
+      case 'q':
         q_param = atoi(optarg);
         break;
 
