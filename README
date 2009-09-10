@@ -1,0 +1,131 @@
+=======================
+= BRIEF DESCRIPTION
+=======================
+This application is the attempt to implement model checking (verification and
+controller synthesis) for DTLHS. The main idea is using Fourier-Motzkin
+procedure to get rid of real variables and using NuSMV software to handle
+obtained system.
+
+The latest version of this software is always available at
+http://github.com/darth/model_checking_hybrid/
+
+=======================
+= AUTHORS
+=======================
+Our development team:
+
+  * Vadim Alimguzhin   <darth@darth.su>
+
+  * Anton Bogin        <anton.bogin@gmail.com>
+
+  * Viktoriya Kozyreva <viktoriya.kozyreva@gmail.com>
+
+  * Denis Makartetskiy <makartetsky@gmail.com>
+
+=======================
+= WHAT IS DONE
+=======================
+At this moment the following process is implemented:
+
+  1) read DTLHS from the input file;
+
+  2) eliminate output variables;
+
+  3) make quantization of DTLHS;
+
+  4) eliminate real parts of variables;
+
+  5) build equisatisfiable CNFs for the systems of linear constraints from
+     DTLHS;
+
+  6) compose input file for NuSMV software;
+
+  7) launch verification using NuSMV;
+
+  8) read counterexample from xml file, if verification process fails.
+
+=======================
+= TODO
+=======================
+Implement:
+
+ * building SMV model directly using CUDD OBDD package;
+
+ * working with NuSMV through its api.
+
+=======================
+= BUILDING
+=======================
+Prerequisites:
+
+  * GNU C++ compiler
+
+  * GNU make utility
+
+  * GMP library (with C++ bindings)
+    http://gmplib.org/
+
+  * FM library
+    http://github.com/darth/fm_lib_with_gmp/
+
+  * Xerces-C++ library
+    http://xerces.apache.org/xerces-c/
+
+Run
+
+  % make release
+
+for building release binary.
+
+Run
+
+  % make debug
+
+for building debug binary.
+
+Run
+
+  % make
+
+for building both of them.
+
+Run
+  
+  % make clean
+
+for cleaning after (un)successful build.
+
+=======================
+= USING
+=======================
+Prerequisites:
+
+  * NuSMV software
+    http://nusmv.irst.itc.it/
+
+Help for the using application can be obtained by invocation it with '-h'
+('--help') parameter.
+
+  % ./project.exe -h
+
+  Prototype of model checker for hybrid systems 0.1
+  usage: ./project.exe [-v level] [-q value] filename 
+         read model from "filename" and verify with "value" of q_param
+     or: ./project.exe -h
+         print help message
+
+If verbosity value is more than 0 result of intermediate steps are printed to
+the standard output.
+
+Examples of input files are in the directory examples. The format is simple and
+self-explaining.
+
+=======================
+= DOCUMENTATION
+=======================
+Doxygen documentation can be obtained by running
+
+  % make doc
+
+Doxygen software is needed for this step.
+Generated documentation will be in the 'doc' directory.
