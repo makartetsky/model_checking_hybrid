@@ -66,10 +66,10 @@ $(minisat+_exec) : $(minisat+_root)/*.C $(minisat+_root)/*.h Makefile
 	$(MAKE) rs && \
 	mv minisat+_bignum_static ../$(minisat+_exec)) || exit 1
 
-.PHONY : all release debug clean clean_r clean_d clean_minisat
+.PHONY : all release debug clean clean_r clean_d clean_minisat doc
 
 clean : clean_r clean_d clean_minisat
-	-rm -rf doc/
+	-rm -rf doc/*
 
 clean_r :
 	-rm -f $(result) $(depfiles) $(objects)
@@ -84,5 +84,5 @@ clean_minisat :
 TAGS : $(src_dir)/* $(include_dir)/*
 	ctags -R --c++-kinds=+p --fields=+iaS --extra=+q $(src_dir) $(include_dir)
 
-doc: $(src_dir)/* $(include_dir)/* Doxyfile
+doc:
 	doxygen Doxyfile
