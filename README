@@ -1,6 +1,7 @@
 =======================
 = BRIEF DESCRIPTION
 =======================
+
 This application is the attempt to implement model checking (verification and
 controller synthesis) for DTLHS. The main idea is using Fourier-Motzkin
 procedure to get rid of real variables and using NuSMV software to handle
@@ -12,6 +13,7 @@ http://github.com/darth/model_checking_hybrid/
 =======================
 = AUTHORS
 =======================
+
 Our development team:
 
   * Vadim Alimguzhin   <darth@darth.su>
@@ -25,6 +27,7 @@ Our development team:
 =======================
 = WHAT IS DONE
 =======================
+
 At this moment the following process is implemented:
 
   1) read DTLHS from the input file;
@@ -47,15 +50,19 @@ At this moment the following process is implemented:
 =======================
 = TODO
 =======================
+
 Implement:
 
  * building SMV model directly using CUDD OBDD package;
 
- * working with NuSMV through its api.
+ * working with NuSMV through its api;
+
+ * complete the whole chain (both verification and controller synthesis).
 
 =======================
 = BUILDING
 =======================
+
 Prerequisites:
 
   * GNU C++ compiler
@@ -66,10 +73,18 @@ Prerequisites:
     http://gmplib.org/
 
   * FM library
+    Original version:
+    http://www-rocq.inria.fr/~pouchet/software/fm/
+    We use modified version, it is available at:
     http://github.com/darth/fm_lib_with_gmp/
 
   * Xerces-C++ library
     http://xerces.apache.org/xerces-c/
+
+  * Minisat+
+    http://minisat.se/MiniSat+.html
+    We use slightly modified version, it is included in the sources (directory
+    'minisat+').
 
 Run
 
@@ -98,12 +113,13 @@ for cleaning after (un)successful build.
 =======================
 = USING
 =======================
+
 Prerequisites:
 
   * NuSMV software
     http://nusmv.irst.itc.it/
 
-Help for the using application can be obtained by invocation it with '-h'
+Help for the application using can be obtained by invocation it with '-h'
 ('--help') parameter.
 
   % ./project.exe -h
@@ -117,15 +133,40 @@ Help for the using application can be obtained by invocation it with '-h'
 If verbosity value is more than 0 result of intermediate steps are printed to
 the standard output.
 
-Examples of input files are in the directory examples. The format is simple and
+Examples of input files are in the directory 'examples'. The format is simple and
 self-explaining.
 
 =======================
 = DOCUMENTATION
 =======================
+
 Doxygen documentation can be obtained by running
 
   % make doc
 
 Doxygen software is needed for this step.
 Generated documentation will be in the 'doc' directory.
+
+=======================
+= FILES
+=======================
+
+build/       Directory for object files for release binary.
+
+build_debug/ Directory for object files for debug binary.
+
+doc/         Directory for documentation.
+
+examples/    Directory with sample input files.
+
+minisat+/    Minisat+ sources.
+
+src/         Directory with header and source files.
+
+Doxyfile     Configuration file for Doxygen.
+
+Makefile     Project's makefile.
+
+README       This file.
+
+nusmv_cmds   File with commands for NuSMV interactive mode.
